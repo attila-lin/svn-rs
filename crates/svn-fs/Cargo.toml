@@ -1,0 +1,7 @@
+[package]
+name = "svn-fs"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+
+[dependencies]

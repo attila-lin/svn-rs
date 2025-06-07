@@ -1,0 +1,9 @@
+[package]
+name = "svn-subr"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+
+[dependencies]
+md-5 = "0.10.6"
+hex = "0.4.3"
