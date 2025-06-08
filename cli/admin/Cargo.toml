@@ -1,8 +1,10 @@
 [package]
-name = "svn-repos"
+name = "svnadmin"
 version.workspace = true
 edition.workspace = true
 authors.workspace = true
 
 [dependencies]
-thiserror.workspace = true
+svn-subr.workspace = true
+
+clap.workspace = true
