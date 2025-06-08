@@ -3,5 +3,11 @@ mod checksum;
 pub use checksum::Checksum;
 pub use checksum::ChecksumKind;
 
-pub mod user;
+mod base64;
 mod subst;
+pub mod user;
+mod version;
+pub use version::Version;
+
+/// Re-exporting commonly used types
+pub use uuid::{Uuid, uuid};

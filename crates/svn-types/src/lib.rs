@@ -2,6 +2,7 @@ mod node_kind;
 pub use node_kind::NodeKind;
 
 mod commit_info;
+mod depth;
 mod directory_entry;
 mod lock;
 

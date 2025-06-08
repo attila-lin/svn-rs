@@ -1,14 +1,13 @@
-pub fn add(left: u64, right: u64) -> u64 {
-    left + right
-}
+mod fs;
+mod fsx;
+mod root;
 
-#[cfg(test)]
-mod tests {
-    use super::*;
+use svn_types::RevisionNumber;
 
-    #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
-    }
+/// `fs_vtable_t`
+pub trait FsTrait {
+    fn youngest_rev(&self) -> RevisionNumber;
+    fn refresh_revision_prop(&self) -> Result<(), ()>;
+
+    fn revision_prop() -> Result<(), ()>;
 }
