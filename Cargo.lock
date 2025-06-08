@@ -53,6 +53,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "anyhow"
+version = "1.0.98"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e16d2d3311acee920a9eb8d33b8cbc1787ce4a264e85f964c2404b969bdcd487"
+
+[[package]]
 name = "bitflags"
 version = "2.9.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -338,12 +344,14 @@ name = "svn-fs"
 version = "0.0.0"
 dependencies = [
  "svn-types",
+ "uuid",
 ]
 
 [[package]]
 name = "svn-ra"
 version = "0.0.0"
 dependencies = [
+ "strum",
  "svn-subr",
 ]
 
@@ -351,6 +359,7 @@ dependencies = [
 name = "svn-repos"
 version = "0.0.0"
 dependencies = [
+ "svn-fs",
  "thiserror",
 ]
 
@@ -387,7 +396,10 @@ version = "0.0.0"
 name = "svnadmin"
 version = "0.0.0"
 dependencies = [
+ "anyhow",
  "clap",
+ "svn-fs",
+ "svn-repos",
  "svn-subr",
 ]
 

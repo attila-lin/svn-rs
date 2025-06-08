@@ -6,3 +6,5 @@ authors.workspace = true
 
 [dependencies]
 svn-types.workspace = true
+
+uuid.workspace = true
