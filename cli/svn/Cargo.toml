@@ -1,0 +1,9 @@
+[package]
+name = "svn"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+
+[dependencies]
+clap = { workspace = true }
+anyhow = { workspace = true }

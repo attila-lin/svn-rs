@@ -421,11 +421,23 @@ dependencies = [
 ]
 
 [[package]]
+name = "svn"
+version = "0.0.0"
+dependencies = [
+ "anyhow",
+ "clap",
+]
+
+[[package]]
 name = "svn-client"
 version = "0.0.0"
 dependencies = [
  "clap",
 ]
+
+[[package]]
+name = "svn-delta"
+version = "0.0.0"
 
 [[package]]
 name = "svn-diff"
@@ -490,6 +502,38 @@ dependencies = [
 
 [[package]]
 name = "svnadmin"
+version = "0.0.0"
+dependencies = [
+ "anyhow",
+ "clap",
+ "svn-fs",
+ "svn-repos",
+ "svn-subr",
+]
+
+[[package]]
+name = "svndumpfilter"
+version = "0.0.0"
+
+[[package]]
+name = "svnlook"
+version = "0.0.0"
+dependencies = [
+ "anyhow",
+ "clap",
+ "svn-delta",
+ "svn-diff",
+ "svn-fs",
+ "svn-repos",
+ "svn-subr",
+]
+
+[[package]]
+name = "svnmucc"
+version = "0.0.0"
+
+[[package]]
+name = "svnserve"
 version = "0.0.0"
 dependencies = [
  "anyhow",

@@ -1,0 +1,16 @@
+[package]
+name = "svnserve"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+
+[dependencies]
+svn-subr = { workspace = true }
+
+svn-fs = { workspace = true }
+
+svn-repos = { workspace = true }
+
+
+clap = { workspace = true }
+anyhow = { workspace = true }

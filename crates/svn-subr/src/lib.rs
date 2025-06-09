@@ -4,9 +4,11 @@ pub use checksum::Checksum;
 pub use checksum::ChecksumKind;
 
 mod base64;
+mod config;
 mod subst;
 pub mod user;
 mod version;
+
 pub use version::Version;
 
 /// Re-exporting commonly used types
