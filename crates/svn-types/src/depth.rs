@@ -7,7 +7,7 @@ use strum::IntoStaticStr;
 //  *
 //  * @note This is similar to, but not exactly the same as, the WebDAV
 //  * and LDAP concepts of depth.
-#[derive(Debug, PartialEq, EnumString, IntoStaticStr)]
+#[derive(Debug, PartialEq, EnumString, IntoStaticStr, Clone, Copy)]
 pub enum Depth {
     /// Depth undetermined or ignored.  In some contexts, this means the
     //       client should choose an appropriate default depth.  The server

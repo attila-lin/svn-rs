@@ -18,7 +18,7 @@ pub enum SubCommand {
 
     /// Create a new, empty repository at REPOS_PATH.
     Create {
-        /// REPOS_PATH
+        #[arg(value_name = "REPOS_PATH")]
         repos_path: String,
     },
 

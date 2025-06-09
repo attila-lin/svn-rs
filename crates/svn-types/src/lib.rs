@@ -3,6 +3,8 @@ pub use node_kind::NodeKind;
 
 mod commit_info;
 mod depth;
+pub use depth::Depth;
+
 mod directory_entry;
 mod lock;
 

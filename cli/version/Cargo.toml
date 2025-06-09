@@ -1,10 +1,10 @@
 [package]
-name = "svn-wc"
+name = "svnversion"
 version.workspace = true
 edition.workspace = true
 authors.workspace = true
 
 [dependencies]
-svn-types.workspace = true
 
-rusqlite = { version = "0.36.0", features = ["bundled"] }
+clap.workspace = true
+anyhow.workspace = true
