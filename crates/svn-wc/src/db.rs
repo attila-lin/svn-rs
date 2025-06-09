@@ -74,4 +74,5 @@ pub struct DbLock {
 /// Context data structure for interacting with the administrative data.
 ///
 /// `svn_wc__db_t`
+#[derive(Debug)]
 pub struct WcDb {}

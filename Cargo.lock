@@ -432,7 +432,7 @@ dependencies = [
 name = "svn-client"
 version = "0.0.0"
 dependencies = [
- "clap",
+ "thiserror",
 ]
 
 [[package]]
@@ -497,6 +497,7 @@ name = "svn-wc"
 version = "0.0.0"
 dependencies = [
  "rusqlite",
+ "svn-subr",
  "svn-types",
 ]
 

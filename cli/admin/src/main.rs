@@ -12,7 +12,7 @@ fn main() {
 
     match cli.command {
         SubCommand::Verify { repos_path } => {
-            println!("Verifying repository at path: {}", repos_path);
+            println!("Verifying repository at path: {repos_path}");
             // Here you would call the function to verify the repository
             // For example: verify_repository(&repos_path);
         }

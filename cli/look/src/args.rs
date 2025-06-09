@@ -15,7 +15,7 @@ pub struct AppArgs {
 
     /// WC_PATH
     #[arg(value_name = "WC_PATH", default_value = ".")]
-    wc_path: String,
+    wc_path: Option<String>,
     /// TRAIL_URL
     #[arg(value_name = "TRAIL_URL", default_value = "")]
     trail_url: String,

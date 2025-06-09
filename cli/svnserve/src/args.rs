@@ -32,4 +32,10 @@ pub struct AppArgs {
     /// read configuration from file ARG
     #[arg(long, value_name = "ARG")]
     config_file: Option<String>,
+
+    /// write server process ID to file ARG
+    ///
+    /// [mode: daemon, listen-once, service]
+    #[arg(long, value_name = "ARG")]
+    pid_file: Option<String>,
 }
