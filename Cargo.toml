@@ -13,6 +13,7 @@ svn-types = { path = "crates/svn-types" }
 svn-subr = { path = "crates/svn-subr" }
 
 svn-fs = { path = "crates/svn-fs" }
+svn-ra = { path = "crates/svn-ra" }
 svn-repos = { path = "crates/svn-repos" }
 svn-delta = { path = "crates/svn-delta" }
 svn-diff = { path = "crates/svn-diff" }

@@ -9,8 +9,11 @@ svn-subr = { workspace = true }
 
 svn-fs = { workspace = true }
 
+svn-ra = { workspace = true }
 svn-repos = { workspace = true }
 
 
 clap = { workspace = true }
 anyhow = { workspace = true }
+
+uuid = { workspace = true }

@@ -1,6 +1,9 @@
 mod repository;
 pub use repository::Repository;
 
+mod client_info;
+pub use client_info::ClientInfo;
+
 mod args;
 pub use args::AppArgs;
 

@@ -533,6 +533,7 @@ dependencies = [
  "bitflags",
  "bytes",
  "svn-fs",
+ "svn-ra",
  "thiserror",
 ]
 
@@ -610,8 +611,10 @@ dependencies = [
  "anyhow",
  "clap",
  "svn-fs",
+ "svn-ra",
  "svn-repos",
  "svn-subr",
+ "uuid",
 ]
 
 [[package]]

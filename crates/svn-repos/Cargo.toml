@@ -5,7 +5,8 @@ edition.workspace = true
 authors.workspace = true
 
 [dependencies]
-svn-fs.workspace = true
+svn-fs = { workspace = true }
+svn-ra = { workspace = true }
 
 thiserror.workspace = true
 bitflags = { workspace = true }

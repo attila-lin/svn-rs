@@ -4,6 +4,7 @@
 
 use strum::IntoStaticStr;
 
+/// `SVN_RA_CAPABILITY_*`
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, IntoStaticStr)]
 #[strum(serialize_all = "kebab-case")]
 pub enum RaCapability {
