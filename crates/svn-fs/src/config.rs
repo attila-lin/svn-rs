@@ -24,6 +24,12 @@ pub enum FsConfig {
     Fsfs(FsFsConfig),
 }
 
+impl Default for FsConfig {
+    fn default() -> Self {
+        FsConfig::Fsfs(FsFsConfig::default())
+    }
+}
+
 impl FsConfig {
     pub fn fs_type(&self) -> FsType {
         match self {

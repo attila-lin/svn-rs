@@ -8,3 +8,5 @@ authors.workspace = true
 svn-fs.workspace = true
 
 thiserror.workspace = true
+bitflags = { workspace = true }
+bytes = { workspace = true }

@@ -13,7 +13,9 @@ mod fsfs;
 pub use fsfs::*;
 
 mod fsx;
+mod node;
 mod root;
+pub use node::NodeRevision;
 
 use std::collections::HashMap;
 

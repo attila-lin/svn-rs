@@ -1,7 +1,10 @@
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 
+use uuid::Uuid;
+
 use crate::FsAccess;
+use crate::fsfs::FsFsData;
 
 /// An object representing a Subversion filesystem.
 ///
@@ -15,6 +18,14 @@ pub struct SvnFs {
 
     /// An access context indicating who's using the fs
     access_ctx: FsAccess,
+
+    /// FSAP-specific vtable and private data
+    ///
+    /// FIXME: now use [`FsFsData`]
+    data: FsFsData,
+
+    /// UUID, stored by open(), create(), and set_uuid().
+    uuid: Uuid,
 }
 
 impl super::FsTrait for SvnFs {

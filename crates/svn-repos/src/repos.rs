@@ -86,18 +86,38 @@ impl Repos {
         todo!()
     }
 
+    /// `svn_repos_create`
+    ///
+    /// FIXME: config is not used yet.
+    pub fn create(
+        repository_path: &str,
+        config: &Option<HashMap<String, String>>,
+        fs_config: &FsConfig,
+    ) -> Result<Self, Error> {
+        let mut repos = Self::_create(repository_path, fs_config)?;
+        repos.format = 5; // read `SVN_REPOS__FORMAT_NUMBER`
+
+        // Discover the type of the filesystem we are about to create.
+        repos.fs_type = fs_config.fs_type();
+
+        // Don't create a repository inside another repository.
+        let local_abspath = todo!();
+
+        Ok(repos)
+    }
+
     /// Creates a new repository at the given path.
     ///
     /// `svn_repos_create`
     /// `create_repos_structure`
-    fn create(repository_path: &str, fs_fs_config: &FsConfig) -> Self {
+    pub fn _create(repository_path: &str, fs_config: &FsConfig) -> Result<Self, Error> {
         // Here we would normally create a new repository and return a Repos instance.
         // For now, we just return an empty Repos instance.
         // Repos {
         //     // fs: Rc::new(Fs::new(repository_path)),
         // }
 
-        let fs_type = fs_fs_config.fs_type();
+        let fs_type = fs_config.fs_type();
 
         todo!()
     }
