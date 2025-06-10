@@ -2,6 +2,7 @@ use std::collections::HashMap;
 use std::path::Path;
 use std::rc::Rc;
 
+use svn_fs::FsConfig;
 use svn_fs::FsFsConfig;
 use svn_fs::FsType;
 
@@ -81,19 +82,23 @@ impl Repos {
     //  * passed to the filesystem initialization function and may be @c NULL.
     //  *
     //  * Use @a scratch_pool for temporary allocations.
-    pub fn open_path(&self, path: &Path, fs_config: &FsFsConfig) -> Result<Repos, Error> {
+    pub fn open_path(&self, path: &Path, fs_config: &FsConfig) -> Result<Repos, Error> {
         todo!()
     }
 
     /// Creates a new repository at the given path.
     ///
+    /// `svn_repos_create`
     /// `create_repos_structure`
-    fn create(repository_path: &str) -> Self {
+    fn create(repository_path: &str, fs_fs_config: &FsConfig) -> Self {
         // Here we would normally create a new repository and return a Repos instance.
         // For now, we just return an empty Repos instance.
         // Repos {
         //     // fs: Rc::new(Fs::new(repository_path)),
         // }
+
+        let fs_type = fs_fs_config.fs_type();
+
         todo!()
     }
 }

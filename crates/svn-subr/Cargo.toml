@@ -9,6 +9,8 @@ md-5 = "0.10.6"
 hex = "0.4.3"
 
 uuid = { workspace = true }
+thiserror = { workspace = true }
+
 
 homedir = "0.3.4"
 whoami = "1.6.0"

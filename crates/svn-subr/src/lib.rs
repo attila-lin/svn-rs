@@ -11,7 +11,11 @@ pub use config::SvnConfig;
 mod subst;
 pub mod user;
 
+mod cache;
 mod version;
+pub use cache::MemCache;
+pub use cache::SvnCache;
+
 pub use version::Version;
 
 /// Re-exporting commonly used types

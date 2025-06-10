@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use std::path::{Path, PathBuf};
 
 use crate::FsAccess;
 
@@ -7,7 +8,7 @@ use crate::FsAccess;
 /// `svn_fs_t`
 pub struct SvnFs {
     ///  The path to the repository's top-level directory
-    path: String,
+    pub path: PathBuf,
 
     /// The filesystem configuration
     config: HashMap<(), ()>,

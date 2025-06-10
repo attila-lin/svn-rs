@@ -1,18 +1,24 @@
 mod config;
+pub use config::FsConfig;
 pub use config::FsFsConfig;
 pub use config::FsType;
+
+mod error;
+pub use error::Error;
 
 mod fs;
 pub use fs::SvnFs;
 
-use std::collections::HashMap;
-
-use uuid::Uuid;
+mod fsfs;
+pub use fsfs::*;
 
 mod fsx;
 mod root;
 
+use std::collections::HashMap;
+
 use svn_types::RevisionNumber;
+use uuid::Uuid;
 
 /// `fs_vtable_t`
 pub trait FsTrait {
@@ -27,9 +33,18 @@ pub struct FsAccess {
     /// An authenticated username using the fs
     pub username: String,
     /// A collection of lock-tokens supplied by the fs caller.
-    //      Hash maps (const char *) UUID --> path where path can be the
-    //      magic value (void *) 1 if no path was specified.
-    //      fs functions should really only be interested whether a UUID
-    //      exists as a hash key at all;  the value is irrelevant.
-    lock_tokens: HashMap<Uuid, String>,
+    ///
+    /// Hash maps (const char *) UUID --> path where path can be the
+    /// magic value (void *) 1 if no path was specified.
+    /// fs functions should really only be interested whether a UUID
+    /// exists as a hash key at all;  the value is irrelevant.
+    pub lock_tokens: HashMap<Uuid, String>,
+}
+
+/// `compression_type_t`
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum CompressionType {
+    None,
+    Zlib(i32), // level
+    Lz4,
 }

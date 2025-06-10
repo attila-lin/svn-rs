@@ -1,3 +1,5 @@
+mod wcroot;
+
 /// Enumerated values describing the state of a node.
 ///
 /// `svn_wc__db_status_t`
