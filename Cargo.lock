@@ -65,6 +65,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e16d2d3311acee920a9eb8d33b8cbc1787ce4a264e85f964c2404b969bdcd487"
 
 [[package]]
+name = "base85"
+version = "2.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "36915bbaca237c626689b5bd14d02f2ba7a5a359d30a2a08be697392e3718079"
+dependencies = [
+ "thiserror 1.0.69",
+]
+
+[[package]]
 name = "bitflags"
 version = "2.9.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -506,7 +515,7 @@ dependencies = [
 name = "svn-client"
 version = "0.0.0"
 dependencies = [
- "thiserror",
+ "thiserror 2.0.12",
 ]
 
 [[package]]
@@ -516,6 +525,10 @@ version = "0.0.0"
 [[package]]
 name = "svn-diff"
 version = "0.0.0"
+dependencies = [
+ "base85",
+ "wu-diff",
+]
 
 [[package]]
 name = "svn-fs"
@@ -524,7 +537,7 @@ dependencies = [
  "daggy",
  "svn-subr",
  "svn-types",
- "thiserror",
+ "thiserror 2.0.12",
  "uuid",
 ]
 
@@ -544,7 +557,7 @@ dependencies = [
  "bytes",
  "svn-fs",
  "svn-ra",
- "thiserror",
+ "thiserror 2.0.12",
 ]
 
 [[package]]
@@ -561,7 +574,7 @@ dependencies = [
  "hex",
  "homedir",
  "md-5",
- "thiserror",
+ "thiserror 2.0.12",
  "uuid",
  "whoami",
 ]
@@ -596,6 +609,10 @@ dependencies = [
 [[package]]
 name = "svndumpfilter"
 version = "0.0.0"
+dependencies = [
+ "anyhow",
+ "clap",
+]
 
 [[package]]
 name = "svnlook"
@@ -649,11 +666,31 @@ dependencies = [
 
 [[package]]
 name = "thiserror"
+version = "1.0.69"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b6aaf5339b578ea85b50e080feb250a3e8ae8cfcdff9a461c9ec2904bc923f52"
+dependencies = [
+ "thiserror-impl 1.0.69",
+]
+
+[[package]]
+name = "thiserror"
 version = "2.0.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "567b8a2dae586314f7be2a752ec7474332959c6460e02bde30d702a66d488708"
 dependencies = [
- "thiserror-impl",
+ "thiserror-impl 2.0.12",
+]
+
+[[package]]
+name = "thiserror-impl"
+version = "1.0.69"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4fee6c4efc90059e10f81e6d42c60a18f76588c3d74cb83a0b242a2b6c7504c1"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
 ]
 
 [[package]]
@@ -951,3 +988,9 @@ checksum = "6f42320e61fe2cfd34354ecb597f86f413484a798ba44a8ca1165c58d42da6c1"
 dependencies = [
  "bitflags",
 ]
+
+[[package]]
+name = "wu-diff"
+version = "0.1.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8e3e6735fcde06432870db8dc9d7e3ab1b93727c14eaef329969426299f28893"

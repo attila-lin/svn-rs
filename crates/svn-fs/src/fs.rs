@@ -4,7 +4,7 @@ use std::path::{Path, PathBuf};
 use uuid::Uuid;
 
 use crate::FsAccess;
-use crate::fsfs::FsFsData;
+use crate::backend::fsfs::FsFsData;
 
 /// An object representing a Subversion filesystem.
 ///

@@ -9,12 +9,10 @@ pub use error::Error;
 mod fs;
 pub use fs::SvnFs;
 
-mod fsfs;
-pub use fsfs::*;
-
-mod fsx;
+mod backend;
 mod node;
 mod root;
+
 pub use node::NodeRevision;
 
 use std::collections::HashMap;
