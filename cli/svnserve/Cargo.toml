@@ -17,3 +17,6 @@ clap = { workspace = true }
 anyhow = { workspace = true }
 
 uuid = { workspace = true }
+
+
+socket2 = "0.5"

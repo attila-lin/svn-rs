@@ -11,5 +11,5 @@ pub struct ClientInfo {
     /// Tunneled through login agent
     pub tunnel: bool,
     /// Allow EXTERNAL to authenticate as this
-    tunnel_user: Option<String>,
+    pub tunnel_user: Option<String>,
 }

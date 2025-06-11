@@ -5,6 +5,8 @@ mod client_info;
 pub use client_info::ClientInfo;
 
 mod args;
+mod connection;
+
 pub use args::AppArgs;
 
 /// The strategy for handling incoming connections.  Some of these may be
