@@ -1,0 +1,21 @@
+Index: iota.copied
+===================================================================
+diff --git a/foo1 b/
+diff --git a/foo2 b
+diff --git a/foo3
+diff --git a/foo3
+diff --git foo4 b/foo4
+diff --git a/foo5 b/foo5
+random noise
+diff --git a/foo6 b/foo6
+copy from foo6
+random noise
+copy to foo6
+diff --git a/foo6 b/foo6
+copy from foo6
+diff --git a/iota b/iota.copied
+copy from iota
+copy to iota.copied
+@@ -1 +1,2 @@
+ This is the file 'iota'.
++some more bytes to 'iota'

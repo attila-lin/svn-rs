@@ -1,0 +1,22 @@
+Index: A/C
+===================================================================
+--- A/C	(revision 2)
++++ A/C	(working copy)
+
+Property changes on: A/C
+___________________________________________________________________
+Modified: svn:ignore
+## -7,6 +7,7 ##
+ configure
+ libtool
+ .gdb_history
++.swig_checked
+ *.orig
+ *.rej
+ TAGS
+Modified: svn:mergeinfo
+## -0,1 +0,3 ##
+   Reverse-merged /subversion/branches/1.6.x-r935631:r952683-955333
+   /subversion/branches/nfc-nfd-aware-client:r870276,870376 をマージしました
+   Fusionné /subversion/branches/1.7.x-r1507044:r1507300-1511568
+   Merged /subversion/branches/1.8.x-openssl-dirs:r1535139
