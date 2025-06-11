@@ -1,0 +1,23 @@
+Index: A/mu (deleted)
+===================================================================
+diff --git a/A/mu b/A/mu
+deleted file mode 100644
+Index: A/C/gamma
+===================================================================
+diff --git a/A/C/gamma b/A/C/gamma
+old mode 100644
+new mode 100755
+--- a/A/C/gamma	(revision 2)
++++ b/A/C/gamma	(working copy)
+@@ -1 +1,2 @@
+ This is the file 'gamma'.
++some more bytes to 'gamma'
+Index: iota
+===================================================================
+diff --git a/iota b/iota.copied
+copy from iota
+copy to iota.copied
+Index: new
+===================================================================
+diff --git a/new b/new
+new file mode 100644

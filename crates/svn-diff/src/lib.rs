@@ -2,7 +2,10 @@ pub mod patch;
 
 pub mod parse_diff;
 
+mod file;
+mod parse;
 pub mod tree;
+pub use parse::DiffPatchParser;
 
 /// The separator string used below the "Index:" or similar line of
 /// Subversion's Unidiff-like diff format.
@@ -56,4 +59,16 @@ pub trait SvnDiffFnsTrait {
 
     /// Free *all* tokens from memory, they're no longer needed.
     fn token_discard_all();
+}
+
+/// Describes what operation has been performed on a file.
+/// `svn_diff_operation_kind_e`
+pub enum DiffOperationKind {
+    Unchanged,
+    Added,
+    Deleted,
+    Copied,
+    Moved,
+    /// There's no tree changes, just text modifications.
+    Modified,
 }

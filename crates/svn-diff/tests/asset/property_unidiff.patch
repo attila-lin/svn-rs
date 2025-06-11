@@ -1,0 +1,32 @@
+Index: iota
+===================================================================
+--- iota
++++ iota
+
+Property changes on: iota
+___________________________________________________________________
+Deleted: prop_del
+## -1 +0,0 ##
+-value
+
+Property changes on: iota
+___________________________________________________________________
+Added: prop_add
+## -0,0 +1 ##
++value
+
+Property changes on: iota
+___________________________________________________________________
+Modified: prop_mod
+## -1,4 +1,4 ##
+-value
++new value
+ context
+ context
+ context
+## -10,4 +10,4 ##
+ context
+ context
+ context
+-value
++new value

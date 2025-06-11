@@ -1,0 +1,13 @@
+Index: iota
+===================================================================
+--- iota
++++ iota
+@@ -1 +1,2 @@
+ This is the file 'iota'.
++some more bytes to 'iota'
+
+Property changes on: iota
+___________________________________________________________________
+Added: prop_add
+## -0,0 +1 ##
++value

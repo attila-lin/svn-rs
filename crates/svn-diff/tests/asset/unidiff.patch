@@ -1,0 +1,22 @@
+Index: A/mu (deleted)
+===================================================================
+Index: A/C/gamma
+===================================================================
+--- A/C/gamma\t(revision 2)
++++ A/C/gamma\t(working copy)
+@@ -1 +1,2 @@
+ This is the file 'gamma'.
++some more bytes to 'gamma'
+Index: A/D/gamma"
+===================================================================
+--- A/D/gamma.orig
++++ A/D/gamma
+@@ -1,2 +1 @@
+ This is the file 'gamma'.
+-some less bytes to 'gamma'
+
+Property changes on: mu-ng
+___________________________________________________________________
+Name: newprop
+   + newpropval
+Name: svn:mergeinfo

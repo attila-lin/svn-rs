@@ -1,0 +1,40 @@
+Index: iota.copied
+===================================================================
+diff --git a/iota b/iota.copied
+old mode 100644
+new mode 100755
+copy from iota
+copy to iota.copied
+--- a/iota	(revision 2)
++++ b/iota.copied	(working copy)
+@@ -1 +1,2 @@
+ This is the file 'iota'.
++some more bytes to 'iota'
+Index: A/mu.moved
+===================================================================
+diff --git a/A/mu b/A/mu.moved
+old mode 100644
+new mode 100755
+rename from A/mu
+rename to A/mu.moved
+--- a/A/mu	(revision 2)
++++ b/A/mu.moved	(working copy)
+@@ -1 +1,2 @@
+ This is the file 'mu'.
++some more bytes to 'mu'
+Index: new
+===================================================================
+diff --git a/new b/new
+new file mode 100644
+--- /dev/null	(revision 0)
++++ b/new	(working copy)
+@@ -0,0 +1 @@
++This is the file 'new'.
+Index: A/B/lambda
+===================================================================
+diff --git a/A/B/lambda b/A/B/lambda
+deleted file mode 100755
+--- a/A/B/lambda	(revision 2)
++++ /dev/null	(working copy)
+@@ -1 +0,0 @@
+-This is the file 'lambda'.

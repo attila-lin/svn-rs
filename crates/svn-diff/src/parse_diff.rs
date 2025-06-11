@@ -1,6 +1,7 @@
 use std::fs::File;
 
 use crate::patch::SvnPatch;
+
 ///
 /// `svn_diff_binary_patch_t`
 pub struct DiffBinaryPatch {
