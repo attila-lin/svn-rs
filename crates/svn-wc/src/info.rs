@@ -1,13 +1,13 @@
 use svn_types::Depth;
 use svn_types::RevisionNumber;
 
-/// `svn_wc_info_t`
-///
 /// This struct contains information about a working copy node.
-//  *
-//  * @note Fields may be added to the end of this structure in future
-//  * versions.  Therefore, users shouldn't allocate structures of this
-//  * type, to preserve binary compatibility.
+///
+/// @note Fields may be added to the end of this structure in future
+/// versions.  Therefore, users shouldn't allocate structures of this
+/// type, to preserve binary compatibility.
+///
+/// `svn_wc_info_t`
 #[derive(Debug, Clone)]
 pub struct WcInfo {
     /// The schedule of this item
@@ -16,27 +16,27 @@ pub struct WcInfo {
     /// If copied, the URL from which the copy was made, else @c NULL.
     pub copyfrom_url: Option<String>,
     /// If copied, the revision from which the copy was made,
-    //    * else #SVN_INVALID_REVNUM.
+    /// else #SVN_INVALID_REVNUM.
     copyfrom_rev: Option<RevisionNumber>,
 
     /// A changelist the item is in, @c NULL if this node is not in a
-    //    * changelist.
+    /// changelist.
     changelist: Option<String>,
 
     ///  The depth of the item, see [`Depth`]
     depth: Depth,
 
-    ///  The size of the file after being translated into its local
-    //    * representation, or #SVN_INVALID_FILESIZE if unknown.
-    //    * Not applicable for directories.
+    /// The size of the file after being translated into its local
+    /// representation, or #SVN_INVALID_FILESIZE if unknown.
+    /// Not applicable for directories.
     recorded_size: i64,
 
     ///  The time at which the file had the recorded size recorded_size and was
-    //    * considered unmodified.
+    /// considered unmodified.
     recorded_time: i64,
 
     /// Array of const svn_wc_conflict_description2_t * which contains info
-    //    * on any conflict of which this node is a victim. Otherwise, NULL.
+    /// on any conflict of which this node is a victim. Otherwise, NULL.
     conflicts: Option<Vec<String>>,
 
     /// The local absolute path of the working copy root.

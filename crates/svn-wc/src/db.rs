@@ -18,27 +18,27 @@ use crate::root::WcRoot;
 pub enum DbStatus {
     /// The node is present and has no known modifications applied to it.
     Normal,
-    ///  The node has been added (potentially obscuring a delete or move of
-    //        the BASE node; see HAVE_BASE param [### What param? This is an enum
-    //        not a function.] ). The text will be marked as
-    //        modified, and if properties exist, they will be marked as modified.
+    /// The node has been added (potentially obscuring a delete or move of
+    /// the BASE node; see HAVE_BASE param [### What param? This is an enum
+    /// not a function.] ). The text will be marked as
+    /// modified, and if properties exist, they will be marked as modified.
     //
-    //        In many cases svn_wc__db_status_added means any of added, moved-here
-    //        or copied-here. See individual functions for clarification and
-    //        svn_wc__db_scan_addition() to get more details.
+    /// In many cases svn_wc__db_status_added means any of added, moved-here
+    /// or copied-here. See individual functions for clarification and
+    /// `svn_wc__db_scan_addition`() to get more details.
     Added,
     /// This node has been added with history, based on the move source.
-    //        Text and property modifications are based on whether changes have
-    //        been made against their pristine versions.
+    /// Text and property modifications are based on whether changes have
+    /// been made against their pristine versions.
     MovedHere,
 
     /// This node has been added with history, based on the copy source.
-    //        Text and property modifications are based on whether changes have
-    //        been made against their pristine versions.
+    /// Text and property modifications are based on whether changes have
+    /// been made against their pristine versions.
     Copied,
 
     /// This node has been deleted. No text or property modifications
-    //        will be present.
+    /// will be present.
     Deleted,
     /// This node was named by the server, but no information was provided.
     ServerExcluded,
@@ -47,29 +47,29 @@ pub enum DbStatus {
     Excluded,
 
     /// This node is not present in this revision. This typically happens
-    //        when a node is deleted and committed without updating its parent.
-    //        The parent revision indicates it should be present, but this node's
-    //        revision states otherwise.
+    /// when a node is deleted and committed without updating its parent.
+    /// The parent revision indicates it should be present, but this node's
+    /// revision states otherwise.
     NotPresent,
 
     /// This node is known, but its information is incomplete. Generally,
-    //        it should be treated similar to the other missing status values
-    //        until some (later) process updates the node with its data.
-    //
-    //        When the incomplete status applies to a directory, the list of
-    //        children and the list of its base properties as recorded in the
-    //        working copy do not match their working copy versions.
-    //        The update editor can complete a directory by using a different
-    //        update algorithm.
+    /// it should be treated similar to the other missing status values
+    /// until some (later) process updates the node with its data.
+    ///
+    /// When the incomplete status applies to a directory, the list of
+    /// children and the list of its base properties as recorded in the
+    /// working copy do not match their working copy versions.
+    /// The update editor can complete a directory by using a different
+    /// update algorithm.
     Incomplete,
 
     /// The BASE node has been marked as deleted. Only used as an internal
-    //        status in wc_db.c and entries.c.
+    /// status in wc_db.c and entries.c.
     BaseDeleted,
 }
 
 /// Lock information.  We write/read it all as one, so let's use a struct
-///   for convenience.
+/// for convenience.
 ///
 /// `svn_wc__db_lock_t`
 #[derive(Debug, Clone)]
@@ -123,40 +123,40 @@ struct ParseCache {
 
 impl WcDb {
     /// Open a working copy administrative database context.
-    //
-    //    This context is (initially) not associated with any particular working
-    //    copy directory or working copy root (wcroot). As operations are performed,
-    //    this context will load the appropriate wcroot information.
-    //
-    //    The context is returned in DB.
-    //
-    //    CONFIG should hold the various configuration options that may apply to
-    //    the administrative operation. It should live at least as long as the
-    //    RESULT_POOL parameter.
-    //
-    //    When OPEN_WITHOUT_UPGRADE is TRUE, then the working copy databases will
-    //    be opened even when an old database format is found/detected during
-    //    the operation of a wc_db API). If open_without_upgrade is FALSE and an
-    //    upgrade is required, then SVN_ERR_WC_UPGRADE_REQUIRED will be returned
-    //    from that API.
-    //    Passing TRUE will allow a bare minimum of APIs to function (most notably,
-    //    the temp_get_format() function will always return a value) since most of
-    //    these APIs expect a current-format database to be present.
-    //
-    //    If ENFORCE_EMPTY_WQ is TRUE, then any databases with stale work items in
-    //    their work queue will raise an error when they are opened. The operation
-    //    will raise SVN_ERR_WC_CLEANUP_REQUIRED. Passing FALSE for this routine
-    //    means that the work queue is being processed (via 'svn cleanup') and all
-    //    operations should be allowed.
-    //
-    //    The DB will be closed when RESULT_POOL is cleared. It may also be closed
-    //    manually using svn_wc__db_close(). In particular, this will close any
-    //    SQLite databases that have been opened and cached.
-    //
-    //    The context is allocated in RESULT_POOL. This pool is *retained* and used
-    //    for future allocations within the DB. Be forewarned about unbounded
-    //    memory growth if this DB is used across an unbounded number of wcroots
-    //    and versioned directories.
+    ///
+    /// This context is (initially) not associated with any particular working
+    /// copy directory or working copy root (wcroot). As operations are performed,
+    /// this context will load the appropriate wcroot information.
+    ///
+    /// The context is returned in DB.
+    ///
+    /// CONFIG should hold the various configuration options that may apply to
+    /// the administrative operation. It should live at least as long as the
+    /// RESULT_POOL parameter.
+    ///
+    /// When OPEN_WITHOUT_UPGRADE is TRUE, then the working copy databases will
+    /// be opened even when an old database format is found/detected during
+    /// the operation of a wc_db API). If open_without_upgrade is FALSE and an
+    /// upgrade is required, then SVN_ERR_WC_UPGRADE_REQUIRED will be returned
+    /// from that API.
+    /// Passing TRUE will allow a bare minimum of APIs to function (most notably,
+    /// the temp_get_format() function will always return a value) since most of
+    /// these APIs expect a current-format database to be present.
+    ///
+    /// If ENFORCE_EMPTY_WQ is TRUE, then any databases with stale work items in
+    /// their work queue will raise an error when they are opened. The operation
+    /// will raise SVN_ERR_WC_CLEANUP_REQUIRED. Passing FALSE for this routine
+    /// means that the work queue is being processed (via 'svn cleanup') and all
+    /// operations should be allowed.
+    ///
+    /// The DB will be closed when RESULT_POOL is cleared. It may also be closed
+    /// manually using svn_wc__db_close(). In particular, this will close any
+    /// SQLite databases that have been opened and cached.
+    ///
+    /// The context is allocated in RESULT_POOL. This pool is *retained* and used
+    /// for future allocations within the DB. Be forewarned about unbounded
+    /// memory growth if this DB is used across an unbounded number of wcroots
+    /// and versioned directories.
     ///
     /// `svn_wc__db_open`
     pub fn open() -> Result<Self, Error> {
