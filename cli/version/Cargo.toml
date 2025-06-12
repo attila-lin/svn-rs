@@ -5,6 +5,7 @@ edition.workspace = true
 authors.workspace = true
 
 [dependencies]
+svn-wc = { workspace = true }
 
 clap.workspace = true
 anyhow.workspace = true

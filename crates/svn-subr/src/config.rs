@@ -1,6 +1,7 @@
 /// Opaque structure describing a set of configuration options.
 ///
 /// `svn_config_t`
+#[derive(Debug)]
 pub struct SvnConfig {}
 
 impl SvnConfig {

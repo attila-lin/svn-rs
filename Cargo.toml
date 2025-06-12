@@ -17,6 +17,7 @@ svn-ra = { path = "crates/svn-ra" }
 svn-repos = { path = "crates/svn-repos" }
 svn-delta = { path = "crates/svn-delta" }
 svn-diff = { path = "crates/svn-diff" }
+svn-wc = { path = "crates/svn-wc" }
 
 
 clap = {  version = "4.5", features = ["derive"] }

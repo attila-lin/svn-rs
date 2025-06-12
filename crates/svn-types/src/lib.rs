@@ -7,6 +7,7 @@ pub use depth::Depth;
 
 mod directory_entry;
 mod lock;
+pub use lock::SvnLock;
 
 pub use directory_entry::DirectoryEntry;
 
@@ -14,6 +15,7 @@ pub use directory_entry::DirectoryEntry;
 ///
 /// @note Update svnxx/revision.hpp when changing this typedef.
 pub type RevisionNumber = i64;
+pub const SVN_INVALID_REVNUM: RevisionNumber = -1;
 
 /// The maximum size of an expanded or un-expanded keyword.
 pub const SVN_KEYWORD_MAX_LEN: usize = 255;

@@ -15,7 +15,7 @@
 ///  * @note in the current implementation, only files are lockable.
 ///
 /// @from svn_types.h svn_lock_t
-pub struct Lock {
+pub struct SvnLock {
     /// the path this lock applies to
     path: String,
     /// unique URI representing lock

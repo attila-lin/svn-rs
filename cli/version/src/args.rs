@@ -33,7 +33,7 @@ use clap::Subcommand;
 #[command(version, about, long_about = None)]
 pub struct AppArgs {
     /// do not output the trailing newline
-    #[arg(short, long)]
+    #[arg(short, long = "no-newline")]
     no_newline: bool,
     /// last changed rather than current revisions
     #[arg(short, long)]
@@ -42,10 +42,25 @@ pub struct AppArgs {
     #[arg(short, long)]
     quiet: bool,
 
-    /// WC_PATH
     #[arg(value_name = "WC_PATH", default_value = ".")]
     wc_path: String,
-    /// TRAIL_URL
-    #[arg(value_name = "TRAIL_URL", default_value = "")]
-    trail_url: String,
+    #[arg(value_name = "TRAIL_URL")]
+    trail_url: Option<String>,
+}
+
+impl AppArgs {
+    pub fn run(&self) -> anyhow::Result<()> {
+        let local_abspath = "TODO:";
+
+        let wc_ctx = svn_wc::Context::new();
+
+        let res = wc_ctx.revision_status(
+            local_abspath,
+            &self.wc_path,
+            &self.trail_url,
+            self.committed,
+        )?;
+
+        Ok(())
+    }
 }

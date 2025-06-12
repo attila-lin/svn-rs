@@ -1,4 +1,7 @@
 /// The various types of nodes in the Subversion filesystem.
+///
+/// `svn_node_kind_t`
+#[derive(Debug)]
 pub enum NodeKind {
     /// absent
     None,

@@ -9,3 +9,5 @@ svn-types.workspace = true
 svn-subr = { workspace = true }
 
 rusqlite = { version = "0.36.0", features = ["bundled"] }
+thiserror = { workspace = true }
+uuid = { workspace = true }

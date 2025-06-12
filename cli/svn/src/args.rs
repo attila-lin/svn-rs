@@ -179,6 +179,141 @@ pub struct AppArgs {
     #[arg(long = "revprop")]
     revision_property: bool,
 
+    /// relocate via URL-rewriting
+    #[arg(long)]
+    relocate: bool,
+    /// read user configuration files from directory ARG
+    #[arg(long = "config-dir", value_name = "ARG")]
+    config_dir: Option<String>,
+
+    /// set user configuration option in the format:
+    ///     FILE:SECTION:OPTION=[VALUE]
+    /// For example:
+    ///     servers:global:http-library=serf
+    #[arg(long = "config-option")]
+    config_option: Option<String>,
+
+    /// enable automatic properties
+    #[arg(long = "auto-props")]
+    auto_props: bool,
+
+    /// disable automatic properties
+    #[arg(long = "no-auto-props")]
+    no_auto_props: bool,
+
+    /// use a different EOL marker than the standard
+    /// system marker for files with the svn:eol-style
+    /// property set to 'native'.
+    /// ARG may be one of 'LF', 'CR', 'CRLF'
+    #[arg(long = "native-eol", value_name = "ARG")]
+    native_eol: Option<EolType>,
+
+    /// maximum number of log entries
+    #[arg(short, long, value_name = "ARG")]
+    limit: Option<usize>,
+
+    /// don't unlock the targets
+    #[arg(long = "no-unlock")]
+    no_unlock: bool,
+    /// remove changelist association
+    #[arg(long)]
+    remove: bool,
+
+    /// operate only on members of changelist ARG
+    #[arg(long, value_name = "ARG")]
+    changelist: Option<String>,
+
+    /// don't delete changelists after commit
+    #[arg(long = "keep-changelists")]
+    keep_changelists: bool,
+
+    /// keep path in working copy
+    #[arg(long = "keep-local")]
+    keep_local: bool,
+
+    /// retrieve all revision properties
+    #[arg(long = "with-all-revprops")]
+    with_all_revision_properties: bool,
+
+    /// retrieve no revision properties
+    #[arg(long = "with-no-revprops")]
+    with_no_revision_properties: bool,
+
+    /// set revision property ARG in new revision
+    ///
+    /// using the name[=value] format
+    #[arg(long = "with-revprop", value_name = "NAME[=VALUE]")]
+    with_revision_property: Option<String>,
+
+    /// make intermediate directories
+    #[arg(long)]
+    parents: bool,
+
+    /// use/display additional information from merge
+    /// history
+    #[arg(short = 'g', long = "use-merge-history")]
+    use_merge_history: bool,
+
+    /// specify automatic conflict resolution action
+    /// ('postpone', 'working', 'base', 'mine-conflict',
+    /// 'theirs-conflict', 'mine-full', 'theirs-full',
+    /// 'edit', 'launch', 'recommended') (shorthand:
+    /// 'p', 'mc', 'tc', 'mf', 'tf', 'e', 'l', 'r')
+    #[arg(long)]
+    accept: Option<String>,
+
+    /// specify which collection of revisions to display
+    /// ('merged', 'eligible')
+    #[arg(long = "show-revs")]
+    show_revisions: Option<CollectionType>,
+
+    /// number of leading path components to strip from
+    /// paths parsed from the patch file. --strip 0
+    /// is the default and leaves paths unmodified.
+    /// --strip 1 would change the path
+    /// 'doc/fudge/crunchy.html' to 'fudge/crunchy.html'.
+    /// --strip 2 would leave just 'crunchy.html'
+    /// The expected component separator is '/' on all
+    /// platforms. A leading '/' counts as one component.
+    #[arg(long, value_name = "ARG", default_value_t = 0)]
+    strip: usize,
+
+    /// don't expand keywords
+    #[arg(long = "ignore-keywords")]
+    ignore_keywords: bool,
+
+    /// apply the unidiff in reverse
+    #[arg(long = "reverse-diff")]
+    reverse_diff: bool,
+
+    /// ignore whitespace during pattern matching
+    #[arg(long = "ignore-whitespace")]
+    ignore_whitespace: bool,
+
+    /// produce diff output
+    #[arg(long)]
+    diff: bool,
+
+    /// use ARG as diff command
+    #[arg(long = "diff-cmd", value_name = "ARG")]
+    diff_cmd: Option<String>,
+
+    /// override diff-cmd specified in config file
+    #[arg(long = "internal-diff")]
+    internal_diff: bool,
+
+    /// do not print differences for added files
+    #[arg(long = "no-diff-added")]
+    no_diff_added: bool,
+
+    /// do not print differences for deleted files
+    #[arg(long = "no-diff-deleted")]
+    no_diff_deleted: bool,
+
+    /// don't diff copied or moved files with their source
+    #[arg(long = "show-copies-as-adds")]
+    show_copies_as_adds: bool,
+
     #[command(subcommand)]
     pub command: SubCommand,
 }
@@ -195,6 +330,19 @@ pub enum DepthType {
     Files,
     Immediates,
     Infinity,
+}
+
+#[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, clap::ValueEnum)]
+pub enum EolType {
+    Lf,
+    Cr,
+    CrLf,
+}
+
+#[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, clap::ValueEnum)]
+pub enum CollectionType {
+    Merged,
+    Eligible,
 }
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, clap::ValueEnum)]
