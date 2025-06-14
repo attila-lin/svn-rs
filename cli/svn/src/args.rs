@@ -2,6 +2,7 @@ use clap::Parser;
 use clap::Subcommand;
 
 #[derive(Parser, Debug)]
+#[command(version, about, long_about, max_term_width = 80)]
 pub struct AppArgs {
     /// force operation to run
     #[arg(long)]

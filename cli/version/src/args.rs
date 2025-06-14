@@ -30,7 +30,7 @@ use clap::Subcommand;
 ///
 ///   If invoked without arguments WC_PATH will be the current directory.
 #[derive(Parser, Debug)]
-#[command(version, about, long_about = None)]
+#[command(version, about, long_about, max_term_width = 80)]
 pub struct AppArgs {
     /// do not output the trailing newline
     #[arg(short, long = "no-newline")]
@@ -54,12 +54,7 @@ impl AppArgs {
 
         let wc_ctx = svn_wc::Context::new();
 
-        let res = wc_ctx.revision_status(
-            local_abspath,
-            &self.wc_path,
-            &self.trail_url,
-            self.committed,
-        )?;
+        let res = wc_ctx.revision_status(local_abspath, &self.trail_url, self.committed)?;
 
         Ok(())
     }

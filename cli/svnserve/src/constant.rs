@@ -1,0 +1,27 @@
+// Option codes and descriptions for svnserve.
+//
+// The entire list must be terminated with an entry of nulls.
+//
+// APR requires that options without abbreviations
+// have codes greater than 255.
+const SVNSERVE_OPT_LISTEN_PORT: u32 = 256;
+const SVNSERVE_OPT_LISTEN_HOST: u32 = 257;
+const SVNSERVE_OPT_FOREGROUND: u32 = 258;
+const SVNSERVE_OPT_TUNNEL_USER: u32 = 259;
+const SVNSERVE_OPT_VERSION: u32 = 260;
+const SVNSERVE_OPT_PID_FILE: u32 = 261;
+const SVNSERVE_OPT_SERVICE: u32 = 262;
+const SVNSERVE_OPT_CONFIG_FILE: u32 = 263;
+const SVNSERVE_OPT_LOG_FILE: u32 = 264;
+const SVNSERVE_OPT_CACHE_TXDELTAS: u32 = 265;
+const SVNSERVE_OPT_CACHE_FULLTEXTS: u32 = 266;
+const SVNSERVE_OPT_CACHE_REVPROPS: u32 = 267;
+const SVNSERVE_OPT_SINGLE_CONN: u32 = 268;
+const SVNSERVE_OPT_CLIENT_SPEED: u32 = 269;
+const SVNSERVE_OPT_VIRTUAL_HOST: u32 = 270;
+const SVNSERVE_OPT_MIN_THREADS: u32 = 271;
+const SVNSERVE_OPT_MAX_THREADS: u32 = 272;
+const SVNSERVE_OPT_BLOCK_READ: u32 = 273;
+const SVNSERVE_OPT_MAX_REQUEST: u32 = 274;
+const SVNSERVE_OPT_MAX_RESPONSE: u32 = 275;
+const SVNSERVE_OPT_CACHE_NODEPROPS: u32 = 276;

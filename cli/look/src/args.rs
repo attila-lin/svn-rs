@@ -1,7 +1,7 @@
 use clap::Parser;
 
 #[derive(Parser, Debug)]
-#[command(version, about, long_about = None)]
+#[command(version, about, long_about, max_term_width = 80)]
 pub struct AppArgs {
     /// do not output the trailing newline
     #[arg(short, long)]

@@ -1,6 +1,6 @@
 # svnversion
 
-# Usage
+## Usage
 
 ```bash
 cargo run -p svnversion -- --help

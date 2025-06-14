@@ -2,7 +2,7 @@ use clap::Parser;
 use clap::Subcommand;
 
 #[derive(Parser, Debug)]
-#[command(version, about, long_about = None)]
+#[command(version, about, long_about, max_term_width = 80)]
 pub struct AppArgs {
     /// Do not display filtering statistics.
     #[arg(short, long)]

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="EMPTY_MODULE" version="4">
+  <component name="NewModuleRootManager">
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/cli/admin/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cli/dumpfilter/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cli/look/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cli/mucc/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cli/rdump/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cli/svn-cli/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cli/svn/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cli/svnserve/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cli/version/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/crates/svn-client/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/crates/svn-delta/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/crates/svn-diff/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/crates/svn-diff/tests" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/crates/svn-fs/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/crates/svn-ra/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/crates/svn-repos/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/crates/svn-serve/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/crates/svn-subr/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/crates/svn-types/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/crates/svn-wc/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
+      <excludeFolder url="file://$MODULE_DIR$/target" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+  </component>
+</module>

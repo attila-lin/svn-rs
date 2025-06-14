@@ -2,7 +2,7 @@ use clap::Parser;
 
 /// rdump - dump a Subversion repository in a human-readable format
 #[derive(Parser, Debug)]
-#[command(version, about, long_about = None)]
+#[command(version, about, long_about, max_term_width = 80)]
 pub struct AppArgs {
     /// specify revision number ARG (or X:Y range)
     #[arg(short, long, value_name = "ARG", default_value = "HEAD")]
