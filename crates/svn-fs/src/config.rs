@@ -102,7 +102,7 @@ pub struct FsFsConfig {
 }
 
 impl FsFsConfig {
-    const PATH_CONFIG: &'static str = "fsfs.conf";
+    pub const PATH_CONFIG: &'static str = "fsfs.conf";
 
     /// Write FS' initial configuration file.
     ///

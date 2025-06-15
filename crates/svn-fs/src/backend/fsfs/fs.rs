@@ -4,6 +4,7 @@ use std::fmt::Write;
 use std::path::Path;
 use std::path::PathBuf;
 
+use svn_subr::SvnConfig;
 use svn_types::RevisionNumber;
 
 use super::super::BackendError;
@@ -12,8 +13,10 @@ use super::super::FsLibrary;
 use super::FORMAT_NUMBER;
 use super::FsFsData;
 use super::SVN_FS_CONFIG_FSFS_SHARD_SIZE;
+use crate::FsFsConfig;
 use crate::SvnFs;
 use crate::backend::PATH_FORMAT;
+use crate::backend::PATH_MIN_UNPACKED_REV;
 use crate::backend::PATH_REV;
 use crate::backend::PATH_REVS_DIR;
 use crate::backend::PATH_UUID;
@@ -240,6 +243,15 @@ impl FsFsBackend {
         // Read in and cache the repository uuid.
         self._read_uuid(path)?;
 
+        let ffd = self._data_mut();
+        // Read the min unpacked revision.
+        if ffd.format >= 4 {
+            self._update_min_unpacked_rev()?;
+        }
+
+        //  Read the configuration file.
+        self._read_config(path)?;
+
         Ok(())
     }
 
@@ -311,8 +323,112 @@ impl FsFsBackend {
         }
 
         let uuid = fs_err::read_to_string(uuid_path)?;
-        self._data_mut().uuid = uuid.trim().to_string();
+        // self._data_mut().uuid = uuid.trim().to_string();
+        // FIXME:
+
+        Ok(())
+    }
+
+    /// Re-read the MIN_UNPACKED_REV member of FS from disk
+    /// `svn_fs_fs__update_min_unpacked_rev`
+    fn _update_min_unpacked_rev(&mut self) -> Result<(), BackendError> {
+        let ffd = self._data_mut();
+        assert!(ffd.format >= 4, "format must be at least 4");
+        self._read_min_unpacked_rev()?;
+        Ok(())
+    }
+
+    /// Set *MIN_UNPACKED_REV to the integer value read from the file returned
+    /// by #svn_fs_fs__path_min_unpacked_rev() for FS.
+    /// `svn_fs_fs__read_min_unpacked_rev`
+    ///
+    fn _read_min_unpacked_rev(&mut self) -> Result<(), BackendError> {
+        let p = self.path.join(PATH_MIN_UNPACKED_REV);
+        let read = fs_err::read_to_string(&p)?;
+        let ffd = self._data_mut();
+        ffd.min_unpacked_rev = read.trim().parse()?;
+        Ok(())
+    }
+
+    /// Read the configuration information of the file system at FS_PATH
+    /// and set the respective values in FFD.
+    ///
+    /// `read_config`
+    fn _read_config(&mut self, path: &Path) -> Result<(), BackendError> {
+        let config_path = path.join(FsFsConfig::PATH_CONFIG);
+        let config = SvnConfig::from_path(&config_path);
+
+        let ffd = self._data_mut();
+        // Initialize ffd->rep_sharing_allowed.
+        if ffd.format >= 4 {
+            ffd.rep_sharing_allowed = config.get_bool("rep-sharing", "enable-rep-sharing", true)?;
+        } else {
+            ffd.rep_sharing_allowed = false;
+        }
+
+        // Initialize deltification settings in ffd.
+        if ffd.format >= 4 {
+            ffd.deltify_directories =
+                config.get_bool("deltification", "enable-dir-deltification", true)?;
+            ffd.deltify_properties =
+                config.get_bool("deltification", "enable-props-deltification", true)?;
+            ffd.max_deltification_walk = config.get_i64(
+                "deltification",
+                "max-deltification-walk",
+                SVN_FS_FS_MAX_DELTIFICATION_WALK,
+            )?;
+            ffd.max_linear_deltification = config.get_i64(
+                "deltification",
+                "max-linear-deltification",
+                SVN_FS_FS_MAX_LINEAR_DELTIFICATION, // Default value
+            )?;
+        } else {
+            ffd.deltify_directories = false;
+            ffd.deltify_properties = false;
+            ffd.max_deltification_walk = SVN_FS_FS_MAX_DELTIFICATION_WALK;
+            ffd.max_linear_deltification = SVN_FS_FS_MAX_LINEAR_DELTIFICATION;
+        }
+
+        // Initialize revprop packing settings in ffd.
+        if ffd.format >= 6 {
+            ffd.compress_packed_revprops =
+                config.get_bool("packed-revprops", "compress-packed-revprops", false)?;
+            ffd.revprop_pack_size = config.get_i64(
+                "packed-revprops",
+                "revprop-pack-size",
+                if ffd.compress_packed_revprops {
+                    0x40
+                } else {
+                    0x10
+                },
+            )?;
+
+            ffd.revprop_pack_size *= 1024; // Convert to bytes
+        } else {
+            ffd.revprop_pack_size = 0x10000;
+            ffd.compress_packed_revprops = false;
+        }
+
+        if ffd.format >= 7 {
+            todo!()
+        } else {
+            todo!()
+        }
 
         Ok(())
     }
 }
+
+/// Finding a deltification base takes operations proportional to the
+/// number of changes being skipped. To prevent exploding runtime
+/// during commits, limit the deltification range to this value.
+/// Should be a power of 2 minus one.
+/// Values < 1 disable deltification.
+const SVN_FS_FS_MAX_DELTIFICATION_WALK: i64 = 1023;
+
+/// Begin deltification after a node history exceeded this this limit.
+/// Useful values are 4 to 64 with 16 being a good compromise between
+/// computational overhead and repository size savings.
+/// Should be a power of 2.
+/// Values < 2 will result in standard skip-delta behavior.
+const SVN_FS_FS_MAX_LINEAR_DELTIFICATION: i64 = 16;

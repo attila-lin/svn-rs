@@ -50,9 +50,6 @@ pub struct FsFsData {
     /// (svn_fs_id_t *).  (Not threadsafe.)
     pub rev_root_id_cache: Option<SvnCache<(), ()>>,
 
-    /// Compression type to use with txdelta storage format in new revs.
-    delta_compression_type: CompressionType,
-
     /// Pack after every commit.
     pack_after_commit: bool,
 
@@ -71,6 +68,32 @@ pub struct FsFsData {
     /// The oldest revision not in a pack file.  It also applies to revprops
     /// if revprop packing has been enabled by the FSFS format version.
     pub min_unpacked_rev: RevisionNumber,
+
+    /// Whether rep-sharing is supported by the filesystem and allowed by the configuration.
+    pub rep_sharing_allowed: bool,
+
+    /// File size limit in bytes up to which multiple revprops shall be packed into a single file.
+    pub revprop_pack_size: i64,
+
+    /// Whether packed revprop files shall be compressed.
+    pub compress_packed_revprops: bool,
+
+    // TODO: move to deltify_data
+    /// Whether directory nodes shall be deltified just like file nodes.
+    pub deltify_directories: bool,
+
+    /// Whether nodes properties shall be deltified.
+    pub deltify_properties: bool,
+
+    /// Restart deltification histories after each multiple of this value
+    pub max_deltification_walk: i64,
+
+    /// Maximum number of length of the linear part at the top of the
+    /// deltification history after which skip deltas will be used.
+    pub max_linear_deltification: i64,
+
+    /// Compression type to use with txdelta storage format in new revs.
+    pub delta_compression_type: CompressionType,
 
     /// cache
     cache: FsFsDataCache,

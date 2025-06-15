@@ -5,7 +5,7 @@ pub use checksum::ChecksumKind;
 
 mod base64;
 
-mod config;
+pub mod config;
 pub use config::SvnConfig;
 
 mod subst;

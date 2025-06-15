@@ -12,4 +12,10 @@ pub enum BackendError {
 
     #[error("File not found: {0}")]
     FileNotFound(String),
+
+    #[error(transparent)]
+    ParseInt(#[from] std::num::ParseIntError),
+
+    #[error(transparent)]
+    Config(#[from] svn_subr::config::ConfigError),
 }
