@@ -6,8 +6,8 @@ use uuid::Uuid;
 
 use crate::Error;
 use crate::FsType;
-use crate::backend::FsInstance;
 use crate::backend::fsfs::{FsFsBackend, FsFsData};
+use crate::backend::{FsInstance, FsLibrary};
 use crate::{FsAccess, FsConfig};
 
 const FS_TYPE_FILENAME: &str = "fs-type";
@@ -66,7 +66,7 @@ impl SvnFs {
     /// though the caller should not rely upon any particular default if they
     /// wish to ensure that a filesystem of a specific type is created.
     ///
-    /// `svn_fs_create2`
+    /// `svn_fs`/`svn_fs_create2`
     pub fn create(
         fs: &mut Option<Rc<dyn FsInstance>>,
         db_path: &Path,
@@ -96,9 +96,48 @@ impl SvnFs {
         let fs_type_file = db_path.join(FS_TYPE_FILENAME);
         fs_err::write(fs_type_file, format!("{}\n", fs_type.to_string()))?;
 
+        // let ret = Self {
+        //     path:
+        // }
+
         // Perform the actual creation
-        new_fs.create(db_path, config)?;
-        new_fs.open(db_path, config)?;
-        todo!()
+        new_fs.create(db_path)?;
+        // new_fs.open(db_path, config)?;
+        Ok(ret)
+    }
+
+    /// Open a Subversion filesystem located in the directory @a path, and
+    /// return a pointer to it in @a *fs_p.  If @a fs_config is not @c
+    /// NULL, the options it contains modify the behavior of the
+    /// filesystem.  The interpretation of @a fs_config is specific to the
+    /// filesystem back-end.  The opened filesystem will be allocated in
+    /// @a result_pool may be closed by clearing or destroying that pool.
+    /// Use @a scratch_pool for temporary allocations.
+    ///
+    /// @note The lifetime of @a fs_config must not be shorter than @a
+    /// result_pool's. It's a good idea to allocate @a fs_config from
+    /// @a result_pool or one of its ancestors.
+    ///
+    /// Only one thread may operate on any given filesystem object at once.
+    /// Two threads may access the same filesystem simultaneously only if
+    /// they open separate filesystem objects.
+    ///
+    /// @note You probably don't want to use this directly.  
+    /// Take a look at svn_repos_open3() `Repos::open` instead.
+    ///
+    /// `svn_fs_open2`
+    fn fs_open(&mut self, path: &Path, config: &FsConfig) -> Result<(), Error> {
+        let fs_lib = self.fs_library();
+
+        fs_lib.open_fs(path)?;
+
+        Ok(())
+    }
+
+    /// `fs_library_vtable`
+    fn fs_library(&self) -> &dyn FsLibrary {
+        let ins = self.inner.as_ref().unwrap();
+        let fs_lib: &dyn FsLibrary = ins.as_ref();
+        fs_lib
     }
 }

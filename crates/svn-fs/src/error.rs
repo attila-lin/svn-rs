@@ -7,4 +7,7 @@ pub enum Error {
 
     #[error("UnsupportedFsType: {0:?}")]
     UnsupportedFsType(FsType),
+
+    #[error(transparent)]
+    Backend(#[from] crate::backend::BackendError),
 }

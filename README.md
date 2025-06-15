@@ -1,6 +1,6 @@
 # svn-rs
 
-A porting of the Subversion (SVN) library and command line tools to Rust.
+A porting of the [Subversion](https://subversion.apache.org/) (SVN) library and command line tools to **Rust**.
 
 **Unfinished**
 
@@ -27,6 +27,7 @@ This project is a work in progress and is not yet functional. It is intended to 
 
 - More configuration file types
   - TOML, JSON, YAML
+- Async support
 
 ## Some Improvements
 

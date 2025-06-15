@@ -9,4 +9,7 @@ pub enum BackendError {
 
     #[error("File exists: {0}")]
     FileExists(String),
+
+    #[error("File not found: {0}")]
+    FileNotFound(String),
 }

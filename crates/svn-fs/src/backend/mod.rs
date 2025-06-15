@@ -1,7 +1,6 @@
 //! diff backend for svn-fs
 
 mod error;
-use std::path::Path;
 
 pub use error::BackendError;
 
@@ -118,7 +117,11 @@ pub const CONFIG_OPTION_PACK_AFTER_COMMIT: &str = "pack-after-commit";
 pub const CONFIG_OPTION_VERIFY_BEFORE_COMMIT: &str = "verify-before-commit";
 pub const CONFIG_OPTION_COMPRESSION: &str = "compression";
 
+use std::path::Path;
+
 use svn_types::RevisionNumber;
+
+use crate::SvnFs;
 
 /// vtable types for the abstract FS objects
 ///
@@ -143,7 +146,9 @@ pub trait FsLibrary: Send + Sync {
     /// The open_fs/create/open_fs_for_recovery/upgrade_fs functions must
     /// use the common_pool_lock to serialize the access to the common_pool
     /// parameter for allocating fs-global objects such as an env cache.
-    fn create(&self, path: &Path) -> Result<(), BackendError>;
+    fn create(fs: &mut SvnFs, path: &Path) -> Result<(), BackendError>
+    where
+        Self: Sized;
     fn open_fs(&self, path: &Path) -> Result<(), BackendError>;
     fn open_fs_for_recovery(&self, path: &str) -> Result<(), BackendError>;
     fn upgrade_fs(&self, path: &str) -> Result<(), BackendError>;

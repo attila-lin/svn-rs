@@ -11,10 +11,12 @@ use super::super::FsInstance;
 use super::super::FsLibrary;
 use super::FORMAT_NUMBER;
 use super::FsFsData;
+use super::SVN_FS_CONFIG_FSFS_SHARD_SIZE;
 use crate::SvnFs;
 use crate::backend::PATH_FORMAT;
 use crate::backend::PATH_REV;
 use crate::backend::PATH_REVS_DIR;
+use crate::backend::PATH_UUID;
 use crate::backend::fsfs::FsFsBackend;
 use crate::backend::fsfs::SVN_FS_CONFIG_FSFS_LOG_ADDRESSING;
 
@@ -27,13 +29,33 @@ impl FsLibrary for FsFsBackend {
     // fsfs-backed Subversion filesystem at path PATH and link it into
     // *FS.  Perform temporary allocations in POOL, and fs-global allocations
     // in COMMON_POOL.  The latter must be serialized using COMMON_POOL_LOCK.
+    //
     // `fs_create`
-    fn create(&self, path: &Path) -> Result<(), BackendError> {
+    fn create(fs: &mut SvnFs, path: &Path) -> Result<(), BackendError> {
         let data = Self::initialize_fs_struct();
+
+        Ok(())
     }
+
+    /// This implements the [`FsLibrary`].[`open_fs`]() API.  Open an FSFS
+    /// Subversion filesystem located at PATH, set *FS to point to the
+    /// correct vtable for the filesystem.  Use POOL for any temporary
+    /// allocations, and COMMON_POOL for fs-global allocations.
+    /// The latter must be serialized using COMMON_POOL_LOCK.
+    ///
+    /// `fs_open`
     fn open_fs(&self, path: &Path) -> Result<(), BackendError> {
+        // TODO:
+        // self.check_fs(path)?;
+
+        Self::initialize_fs_struct();
+
+        self._open(path)?;
+        self._initialize_cache()?;
+
         todo!()
     }
+
     fn open_fs_for_recovery(&self, path: &str) -> Result<(), BackendError> {
         todo!()
     }
@@ -63,7 +85,7 @@ impl FsFsBackend {
     }
 
     // `svn_fs_fs__create`
-    fn _create(fs: &mut SvnFs, path: &Path) {
+    fn _create(fs: &mut SvnFs, path: &Path) -> Result<(), BackendError> {
         // We don't care version, just use 8
         let format = FORMAT_NUMBER;
 
@@ -80,10 +102,11 @@ impl FsFsBackend {
             .map_or(false, |v| v == "true");
 
         // Actual FS creation.
-        Self::create_file_tree(path, format, shard_size, log_addressing)?;
+        let mut f = FsFsBackend::new(path.to_path_buf());
+        f.create_file_tree(path, format, shard_size, log_addressing)?;
 
         // This filesystem is ready.  Stamp it with a format number.
-        self.write_format()
+        s.write_format()
     }
 
     /// Under the repository db PATH, create a FSFS repository with FORMAT,
@@ -193,11 +216,103 @@ impl FsFsBackend {
                     format_path.to_string_lossy().to_string(),
                 ));
             }
-            fs_err::write(format_path, sb)?;
+            fs_err::write(&format_path, sb)?;
         } else {
-            svn_subr::io::write_atomic(path, sb, None, ffd.flush_to_disk)?;
+            svn_subr::io::write_atomic(&self.path, sb.as_bytes(), None, ffd.flush_to_disk)?;
         }
 
-        todo!()
+        svn_subr::io::set_file_read_only(&format_path, false)?;
+        Ok(())
+    }
+
+    ///  Open the fsfs filesystem pointed to by PATH and associate it with
+    ///    filesystem object FS.  Use POOL for temporary allocations.
+    ///
+    ///    ### Some parts of *FS must have been initialized beforehand; some parts
+    ///       (including FS->path) are initialized by this function.
+    /// `svn_fs_fs__open`
+    fn _open(&mut self, path: &Path) -> Result<(), BackendError> {
+        self.path = path.to_path_buf();
+
+        // Read the FS format file.
+        self._read_format_file(path)?;
+
+        // Read in and cache the repository uuid.
+        self._read_uuid(path)?;
+
+        Ok(())
+    }
+
+    /// Read the 'format' file of fsfs filesystem FS and store its info in FS.
+    ///
+    /// `svn_fs_fs__read_format_file`
+    fn _read_format_file(&mut self, path: &Path) -> Result<(), BackendError> {
+        let ffd = self._data_mut();
+        let format_path = path.join(PATH_FORMAT);
+
+        // Read info from format file.
+        let (format, max_files_per_dir, use_log_addressing) = Self::_read_format(&format_path)?;
+
+        //  Now that we've got *all* info, store / update values in FFD.
+        ffd.format = format;
+        ffd.max_files_per_dir = max_files_per_dir;
+        ffd.use_log_addressing = use_log_addressing;
+
+        Ok(())
+    }
+
+    /// Read the format number and maximum number of files per directory
+    ///   from PATH and return them in *PFORMAT, *MAX_FILES_PER_DIR and
+    ///   USE_LOG_ADDRESSIONG respectively.
+    ///
+    ///   *MAX_FILES_PER_DIR is obtained from the 'layout' format option, and
+    ///   will be set to zero if a linear scheme should be used.
+    ///   *USE_LOG_ADDRESSIONG is obtained from the 'addressing' format option,
+    ///   and will be set to FALSE for physical addressing.
+    /// `read_format`
+    fn _read_format(format_path: &Path) -> Result<(u32, u32, bool), BackendError> {
+        let mut format = 0;
+        let mut max_files_per_dir = 0;
+        let mut use_log_addressing = false;
+
+        // Read the format file and parse the values.
+        if format_path.exists() {
+            let content = fs_err::read_to_string(format_path)?;
+            for line in content.lines() {
+                if line.starts_with("layout sharded") {
+                    max_files_per_dir = line
+                        .split_whitespace()
+                        .nth(2)
+                        .and_then(|s| s.parse::<u32>().ok())
+                        .unwrap_or(0);
+                } else if line.starts_with("layout linear") {
+                    max_files_per_dir = 0;
+                } else if line.starts_with("addressing logical") {
+                    use_log_addressing = true;
+                } else if line.starts_with("addressing physical") {
+                    use_log_addressing = false;
+                } else if let Ok(num) = line.parse::<u32>() {
+                    format = num;
+                }
+            }
+        }
+
+        Ok((format, max_files_per_dir, use_log_addressing))
+    }
+
+    /// Read FS's UUID file and store the data in the FS struct.
+    /// `read_uuid`
+    fn _read_uuid(&mut self, path: &Path) -> Result<(), BackendError> {
+        let uuid_path = path.join(PATH_UUID);
+        if !uuid_path.exists() {
+            return Err(BackendError::FileNotFound(
+                uuid_path.to_string_lossy().to_string(),
+            ));
+        }
+
+        let uuid = fs_err::read_to_string(uuid_path)?;
+        self._data_mut().uuid = uuid.trim().to_string();
+
+        Ok(())
     }
 }

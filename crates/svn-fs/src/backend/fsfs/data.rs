@@ -59,7 +59,7 @@ pub struct FsFsData {
     /// Verify each new revision before commit.
     verify_before_commit: bool,
 
-    ///  Per-instance filesystem ID, which provides an additional level of
+    /// Per-instance filesystem ID, which provides an additional level of
     /// uniqueness for filesystems that share the same UUID, but should
     /// still be distinguishable (e.g. backups produced by svn_fs_hotcopy()
     /// or dump / load cycles).

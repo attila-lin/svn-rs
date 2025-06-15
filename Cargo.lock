@@ -709,9 +709,11 @@ dependencies = [
 name = "svn-subr"
 version = "0.0.0"
 dependencies = [
+ "fs-err",
  "hex",
  "homedir",
  "md-5",
+ "svn-types",
  "thiserror 2.0.12",
  "uuid",
  "whoami",
