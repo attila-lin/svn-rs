@@ -14,6 +14,8 @@ pub use directory_entry::DirectoryEntry;
 /// A revision number.
 ///
 /// @note Update svnxx/revision.hpp when changing this typedef.
+///
+/// `svn_revnum_t`
 pub type RevisionNumber = i64;
 pub const SVN_INVALID_REVNUM: RevisionNumber = -1;
 

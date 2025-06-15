@@ -47,7 +47,7 @@ pub struct AppArgs {
 
     /// do not output the trailing newline
     #[arg(short, long)]
-    no_newline: bool,
+    pub no_newline: bool,
     /// operate on single directory only
     #[arg(short = 'N', long = "non-recursive")]
     non_recursive: bool,
@@ -95,6 +95,15 @@ pub struct AppArgs {
 
     #[command(subcommand)]
     command: Option<SubCommand>,
+}
+
+impl AppArgs {
+    pub fn run(&self) -> anyhow::Result<()> {
+        if let Some(command) = &self.command {
+            command.run(self)?;
+        }
+        Ok(())
+    }
 }
 
 #[derive(clap::Subcommand, Debug)]
@@ -171,4 +180,19 @@ pub enum SubCommand {
         #[arg(value_name = "REPOS_PATH")]
         repos_path: String,
     },
+}
+
+impl SubCommand {
+    fn run(&self, args: &AppArgs) -> anyhow::Result<()> {
+        match self {
+            SubCommand::Youngest { repos_path } => {
+                crate::sub::youngest::run(repos_path, args)?;
+            }
+            _ => {
+                unimplemented!("Command {:?} is not implemented yet", self);
+            }
+        }
+
+        Ok(())
+    }
 }

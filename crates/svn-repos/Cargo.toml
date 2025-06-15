@@ -5,9 +5,12 @@ edition.workspace = true
 authors.workspace = true
 
 [dependencies]
+svn-types = { workspace = true }
+
 svn-fs = { workspace = true }
 svn-ra = { workspace = true }
 
 thiserror.workspace = true
 bitflags = { workspace = true }
 bytes = { workspace = true }
+fs-err = { workspace = true }

@@ -6,17 +6,30 @@ use crate::Error;
 use crate::SvnFs;
 
 /// `svn_fs_type`
-///
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
 pub enum FsType {
+    /// Berkeley-DB implementation
     #[deprecated]
-    Ddb,
+    Bdb,
+    /// Native-filesystem implementation
+    #[default]
     Fsfs,
     /// [EXPERIMENTAL] filesystem backend.
     ///
     /// It is not ready for general production use.  Please consult the
     /// respective release notes on suggested usage scenarios.
     Fsx,
+}
+
+impl ToString for FsType {
+    fn to_string(&self) -> String {
+        match self {
+            #[allow(deprecated)]
+            FsType::Bdb => "bdb".to_string(),
+            FsType::Fsfs => "fsfs".to_string(),
+            FsType::Fsx => "fsx".to_string(),
+        }
+    }
 }
 
 #[derive(Debug, Clone)]

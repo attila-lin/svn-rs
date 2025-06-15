@@ -7,13 +7,17 @@ use svn_types::RevisionNumber;
 /// Any caches in here may be NULL.
 ///
 /// `fs_fs_data_t`
-#[derive(Debug)]
+#[derive(Debug, Default)]
 pub struct FsFsData {
     /// The format number of this FS.
-    pub format: i32,
+    pub format: u32,
     /// The maximum number of files to store per directory (for sharded
     /// layouts) or zero (for linear layouts).
-    pub max_files_per_dir: i32,
+    pub max_files_per_dir: u32,
+
+    /// If set, this FS is using logical addressing.
+    /// Otherwise, it is using physical addressing.
+    pub use_log_addressing: bool,
 
     /// Rev / pack file read granularity in bytes.
     pub block_size: i64,
@@ -56,13 +60,22 @@ pub struct FsFsData {
     verify_before_commit: bool,
 
     ///  Per-instance filesystem ID, which provides an additional level of
-    //      uniqueness for filesystems that share the same UUID, but should
-    //      still be distinguishable (e.g. backups produced by svn_fs_hotcopy()
-    //      or dump / load cycles).
+    /// uniqueness for filesystems that share the same UUID, but should
+    /// still be distinguishable (e.g. backups produced by svn_fs_hotcopy()
+    /// or dump / load cycles).
     pub instance_id: Option<String>,
 
     /// Ensure that all filesystem changes are written to disk.
-    flush_to_disk: bool,
+    pub(crate) flush_to_disk: bool,
+
+    /// The oldest revision not in a pack file.  It also applies to revprops
+    /// if revprop packing has been enabled by the FSFS format version.
+    pub min_unpacked_rev: RevisionNumber,
+
+    /// cache
+    cache: FsFsDataCache,
 }
 
+/// `fs_fs_data_t`'s inner cache
+#[derive(Debug, Default)]
 pub struct FsFsDataCache {}

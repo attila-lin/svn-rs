@@ -13,3 +13,27 @@ This project is a work in progress and is not yet functional. It is intended to 
 - Provide a complete and functional Subversion client in Rust.
 - Provide a complete and functional Subversion server in Rust.
 - Add more features and improvements to the Subversion protocol and library.
+
+## Differences from Subversion
+
+### Do not support any more
+
+- No DVA
+- No early version support
+  - BDB support
+- All deprecated features and functions are removed
+
+### New features
+
+- More configuration file types
+  - TOML, JSON, YAML
+
+## Some Improvements
+
+- Better cross-platform support: Linux, macOS, Windows, and more
+- Performance improvements: FIXME:
+- Better error handling: FIXME:
+- Better Type Definition
+- Safety improvements: FIXME:
+- Documentation improvements: FIXME:
+- Well tested and more unit tests

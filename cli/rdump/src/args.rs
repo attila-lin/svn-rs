@@ -68,3 +68,9 @@ pub struct AppArgs {
     #[arg(short, long, value_name = "ARG")]
     pub file: Option<String>,
 }
+
+impl AppArgs {
+    pub fn run(&self) -> anyhow::Result<()> {
+        Ok(())
+    }
+}

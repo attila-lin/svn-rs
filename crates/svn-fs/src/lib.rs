@@ -9,24 +9,17 @@ pub use error::Error;
 mod fs;
 pub use fs::SvnFs;
 
-mod backend;
+pub mod backend;
 mod node;
 mod root;
 
 pub use node::NodeRevision;
 
 use std::collections::HashMap;
+use std::default;
+use std::fmt::Debug;
 
-use svn_types::RevisionNumber;
 use uuid::Uuid;
-
-/// `fs_vtable_t`
-pub trait FsTrait {
-    fn youngest_rev(&self) -> RevisionNumber;
-    fn refresh_revision_prop(&self) -> Result<(), ()>;
-
-    fn revision_prop(&self) -> Result<(), ()>;
-}
 
 /// `svn_fs_access_t`
 pub struct FsAccess {
@@ -42,8 +35,9 @@ pub struct FsAccess {
 }
 
 /// `compression_type_t`
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
 pub enum CompressionType {
+    #[default]
     None,
     Zlib(i32), // level
     Lz4,

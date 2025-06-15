@@ -12,3 +12,5 @@ uuid.workspace = true
 thiserror = { workspace = true }
 
 daggy = "0.9.0" # for daggy::Dag
+
+fs-err = { workspace = true }
