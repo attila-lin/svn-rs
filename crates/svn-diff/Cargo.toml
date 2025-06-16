@@ -5,6 +5,8 @@ edition.workspace = true
 authors.workspace = true
 
 [dependencies]
+svn-types = { workspace = true }
+
 
 thiserror = { workspace = true }
 

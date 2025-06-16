@@ -417,6 +417,29 @@ impl FsFsBackend {
 
         Ok(())
     }
+
+    /// Initialize all session-local caches in FS according to the global
+    /// cache settings. Use POOL for temporary allocations.
+    ///
+    /// Please note that it is permissible for this function to set some
+    /// or all of these caches to NULL, regardless of any setting.
+    ///
+    /// `svn_fs_fs__initialize_caches`
+    fn _initialize_caches(fs: &mut SvnFs) -> Result<(), BackendError> {
+        let ffd = fs.inner_mut()._data_mut();
+
+        let prefix = format!("fsfs:{}/{}:", fs.uuid, fs.path);
+
+        let no_handler = ffd.fail_stop;
+
+        let (cache_namespace, cache_txdeltas, cache_fulltexts, cache_nodeprops) =
+            super::caching::read_config(self)?;
+
+        let prefix = format!("ns:{}:{}", cache_namespace, prefix);
+        let has_namespace = !cache_namespace.is_empty();
+
+        todo!()
+    }
 }
 
 /// Finding a deltification base takes operations proportional to the

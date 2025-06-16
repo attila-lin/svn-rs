@@ -22,3 +22,5 @@ pub use version::Version;
 pub use uuid::{Uuid, uuid};
 
 pub mod io;
+
+pub mod hash;

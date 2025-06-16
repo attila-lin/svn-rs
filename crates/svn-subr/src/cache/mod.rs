@@ -1,8 +1,10 @@
 //! `svn_cache__t`
 
 mod memcache;
-
 pub use memcache::MemCache;
+
+pub mod config;
+
 use std::fmt::Debug;
 
 use std::sync::atomic::{AtomicU64, Ordering};

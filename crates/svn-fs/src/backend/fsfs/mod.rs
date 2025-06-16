@@ -1,12 +1,13 @@
 mod dag;
+
 mod data;
-
-use std::path::PathBuf;
-
 pub use data::FsFsData;
 
+mod caching;
 mod fs;
 mod vtable;
+
+use std::path::PathBuf;
 
 #[derive(Debug)]
 pub struct FsFsBackend {

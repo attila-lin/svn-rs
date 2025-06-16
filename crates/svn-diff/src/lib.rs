@@ -3,9 +3,11 @@ pub mod patch;
 pub mod parse_diff;
 
 mod file;
+
 mod parse;
-pub mod tree;
 pub use parse::DiffPatchParser;
+
+pub mod tree;
 
 /// The separator string used below the "Index:" or similar line of
 /// Subversion's Unidiff-like diff format.

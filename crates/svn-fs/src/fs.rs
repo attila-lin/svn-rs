@@ -23,7 +23,7 @@ pub struct SvnFs {
     pub config: HashMap<String, String>,
 
     /// An access context indicating who's using the fs
-    access_ctx: FsAccess,
+    pub access_ctx: FsAccess,
 
     // **Note:** Moved to [`inner`]
     // /// FSAP-specific vtable and private data
@@ -34,7 +34,17 @@ pub struct SvnFs {
     inner: Option<Box<dyn FsInstance>>,
 
     /// UUID, stored by open(), create(), and set_uuid().
-    uuid: Uuid,
+    pub uuid: Uuid,
+}
+
+/// utilities
+impl SvnFs {
+    pub fn inner(&self) -> &Box<dyn FsInstance> {
+        self.inner.as_ref().expect("SvnFs inner is not set")
+    }
+    pub fn inner_mut(&mut self) -> &mut Box<dyn FsInstance> {
+        self.inner.as_mut().expect("SvnFs inner is not set")
+    }
 }
 
 impl SvnFs {

@@ -70,12 +70,14 @@ pub fn set_file_read_only(path: &Path, ignore_enoent: bool) -> Result<(), std::i
     };
     use windows::core::PCSTR;
 
-    let path_cstr = CString::new(path)
-        .map_err(|_| io::Error::new(io::ErrorKind::InvalidInput, "path contains null byte"))?;
+    let s = path
+        .to_str()
+        .ok_or_else(|| io::Error::new(io::ErrorKind::InvalidInput, "Path is not valid UTF-8"))?;
+    let path_cstr = CString::new(s)?;
     let path_pcstr = PCSTR(path_cstr.as_ptr() as *const u8);
 
     unsafe {
-        if SetFileAttributesA(path_pcstr, FILE_ATTRIBUTE_READONLY).as_bool() {
+        if SetFileAttributesA(path_pcstr, FILE_ATTRIBUTE_READONLY).is_ok() {
             Ok(())
         } else {
             Err(io::Error::last_os_error())
