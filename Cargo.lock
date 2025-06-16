@@ -751,6 +751,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "svnbench"
+version = "0.0.0"
+dependencies = [
+ "anyhow",
+ "clap",
+]
+
+[[package]]
 name = "svndumpfilter"
 version = "0.0.0"
 dependencies = [
