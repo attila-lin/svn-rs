@@ -10,6 +10,7 @@ svn-types = { workspace = true }
 
 thiserror = { workspace = true }
 
+imara-diff = "0.2"
 base85 = "2.0.0"
 wu-diff = "0.1.2"
 chumsky = "0.10.1" # For parsing diff output and patches

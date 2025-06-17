@@ -1,5 +1,8 @@
 //! `authz.h`/`authz.c` bindings for SVN repositories.
 
+mod info;
+mod parse;
+
 use std::collections::HashMap;
 use std::sync::Arc;
 
@@ -152,6 +155,7 @@ impl LimitedRights {
 /// Accumulated rights for (user, repository).
 ///
 /// `authz_rights_t`
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct AuthzRights {
     /// The lowest level of access that the user has to every
     /// path in the repository.
@@ -159,6 +163,91 @@ pub struct AuthzRights {
     /// The highest level of access that the user has to
     /// any path in the repository
     pub max_access: AuthzAccess,
+}
+
+impl Default for AuthzRights {
+    // Initialize a rights structure.
+    // The minimum rights start with all available access and are later
+    // bitwise-and'ed with actual access rights. The maximum rights begin
+    // empty and are later bitwise-and'ed with actual rights.
+    //
+    // `init_rights`
+    fn default() -> Self {
+        Self {
+            min_access: AuthzAccess::WRITE,
+            max_access: AuthzAccess::NONE,
+        }
+    }
+}
+
+impl AuthzRights {
+    /// Set *RIGHTS_P to the combination of LHS and RHS, i.e. intersect the
+    /// minimal rights and join the maximum rights.
+    ///
+    /// `combine_rights`
+    pub fn combine(lhs: &Self, rhs: &Self) -> Self {
+        Self {
+            min_access: lhs.min_access & rhs.min_access,
+            max_access: lhs.max_access | rhs.max_access,
+        }
+    }
+}
+
+/// Accumulated global rights for a specific user.
+///
+/// `authz_global_rights_t`
+#[derive(Debug)]
+pub struct AuthzGlobalRights {
+    /// The user name
+    user: String,
+    /// Accumulated rights for this user from rules that are not
+    /// repository-specific. We use this to avoid a hash lookup for the
+    /// "any" repository rights.
+    any_reps_rights: AuthzRights,
+    /// Accumulated rights for this user across all repositories.
+    all_reps_rights: AuthzRights,
+    /// Accumulated rights for specific repositories.
+    /// The key is repository name, the value is an authz_rights_t*.
+    per_repos_rights: HashMap<String, AuthzRights>,
+}
+
+impl AuthzGlobalRights {
+    /// Initialize a global rights structure.
+    /// The USER string must be interned or statically initialized.
+    ///
+    /// `init_global_rights`
+    pub fn new(user: &str) -> Self {
+        Self {
+            user: user.to_string(),
+            any_reps_rights: AuthzRights::default(),
+            all_reps_rights: AuthzRights::default(),
+            per_repos_rights: HashMap::new(),
+        }
+    }
+
+    /// Given GLOBAL_RIGHTS and a repository name REPOS, set *RIGHTS_P to
+    /// to the actual accumulated rights defined for that repository.
+    /// Return TRUE if these rights were defined explicitly.
+    ///
+    /// `resolve_global_rights`
+    pub fn resolve_global_rights(&self, rights: &mut AuthzRights, repos: &str) -> bool {
+        if repos.is_empty() {
+            /* Return the accumulated rights that are not repository-specific. */
+            *rights = self.any_reps_rights;
+            return true;
+        } else {
+            /* Check if we have explicit rights for this repository. */
+            if let Some(r) = self.per_repos_rights.get(repos) {
+                *rights = AuthzRights::combine(r, &self.any_reps_rights);
+                return true;
+            }
+        }
+
+        /* Fall-through: return the rights defined for "any" repository
+        because this user has no specific rules for this specific REPOS. */
+        *rights = self.all_reps_rights;
+        false
+    }
 }
 
 /// An entry in svn_authz_t's USER_RULES cache.  All members must be
@@ -377,6 +466,98 @@ pub struct AuthzAce {
 pub struct AuthzFull {
     /// All ACLs from the authz file, in the order of definition.
     acls: Vec<AuthzAcl>,
+
+    /// Globally accumulated rights for anonymous access.
+    anon_rights: Option<AuthzGlobalRights>,
+
+    /// Globally accumulated rights for authenticated users.
+    anthn_rights: Option<AuthzGlobalRights>,
+
+    /// Globally accumulated rights from inverted selectors.
+    neg_rights: Option<AuthzGlobalRights>,
+
+    /// Globally accumulated rights, for all concrete users mentioned
+    /// in the authz file. The key is the user name, the value is
+    /// an authz_global_rights_t*.
+    user_rights: HashMap<String, AuthzGlobalRights>,
+}
+
+impl AuthzFull {
+    /// `has_anon_rights`
+    pub fn has_anon_rights(&self) -> bool {
+        self.anon_rights.is_some()
+    }
+
+    /// `has_authn_rights`
+    pub fn has_authn_rights(&self) -> bool {
+        self.anthn_rights.is_some()
+    }
+
+    /// `has_neg_rights`
+    pub fn has_neg_rights(&self) -> bool {
+        self.neg_rights.is_some()
+    }
+    /// Set *RIGHTS to the accumulated global access rights calculated in
+    /// AUTHZ for (USER, REPOS).
+    /// Return TRUE if the rights are explicit (i.e., an ACL for REPOS
+    /// applies to USER, or REPOS is AUTHZ_ANY_REPOSITORY).
+    ///
+    /// `svn_authz__get_global_rights`
+    pub fn get_global_rights(
+        &self,
+        user: Option<&str>,
+        repository: &str,
+        rights: &mut AuthzRights,
+    ) -> bool {
+        const AUTHZ_ANONYMOUS_USER: &str = "";
+
+        match user {
+            None | Some(AUTHZ_ANONYMOUS_USER) => {
+                // Check if we have explicit rights for anonymous access.
+                if let Some(anon_rights) = &self.anon_rights {
+                    return anon_rights.resolve_global_rights(repos, rights);
+                } else {
+                    // No explicit rights for anonymous users, return the
+                    // default no-access rights.
+                    *rights = AuthzRights::default();
+                    return false;
+                }
+            }
+            Some(user_name) => {
+                let mut combine_user_rights = false;
+                let mut access = false;
+
+                // check if we have explicit rights for this user
+                let user_rights = self.user_rights.get(user_name);
+
+                match user_rights {
+                    Some(the_rights) => {
+                        access = the_rights.resolve_global_rights(repos, rights);
+                    }
+                    None => {
+                        if let Some(neg_rights) = &self.neg_rights {
+                            // check if inverted-rule rights apply
+                            access = neg_rights.resolve_global_rights(repos, rights);
+                            combine_user_rights = true;
+                        }
+                    }
+                }
+
+                /* Rights given to _any_ authenticated user may apply, too. */
+                if let Some(authn_rights) = &authz.anthn_rights {
+                    let mut authn = AuthzRights::default();
+                    let _access = authn_rights.resolve_global_rights(repos, &mut authn);
+                    access |= _access;
+                    if combine_user_rights {
+                        *rights = AuthzRights::combine(&rights, &user_rights);
+                    } else {
+                        *rights = authn;
+                    }
+                }
+            }
+        }
+        eles {}
+    }
 }
 
 /// Dynamic authorization info

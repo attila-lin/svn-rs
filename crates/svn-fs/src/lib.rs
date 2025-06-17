@@ -16,12 +16,12 @@ mod root;
 pub use node::NodeRevision;
 
 use std::collections::HashMap;
-use std::default;
 use std::fmt::Debug;
 
 use uuid::Uuid;
 
 /// `svn_fs_access_t`
+#[derive(Debug, PartialEq, Eq)]
 pub struct FsAccess {
     /// An authenticated username using the fs
     pub username: String,

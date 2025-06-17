@@ -6,16 +6,15 @@ use uuid::Uuid;
 
 use crate::Error;
 use crate::FsType;
-use crate::backend::fsfs::{FsFsBackend, FsFsData};
+use crate::backend::fsfs::FsFsBackend;
 use crate::backend::{FsInstance, FsLibrary};
 use crate::{FsAccess, FsConfig};
 
 const FS_TYPE_FILENAME: &str = "fs-type";
 
-/// An object representing a Subversion filesystem.
-///
-/// `svn_fs_t`
-pub struct SvnFs {
+/// used for inner access
+#[derive(Debug)]
+pub struct SvnFsCommon {
     ///  The path to the repository's top-level directory
     pub path: PathBuf,
 
@@ -24,7 +23,13 @@ pub struct SvnFs {
 
     /// An access context indicating who's using the fs
     pub access_ctx: FsAccess,
+}
 
+/// An object representing a Subversion filesystem.
+///
+/// `svn_fs_t`
+pub struct SvnFs {
+    common: SvnFsCommon,
     // **Note:** Moved to [`inner`]
     // /// FSAP-specific vtable and private data
     // ///
@@ -132,7 +137,7 @@ impl SvnFs {
     /// Two threads may access the same filesystem simultaneously only if
     /// they open separate filesystem objects.
     ///
-    /// @note You probably don't want to use this directly.  
+    /// @note You probably don't want to use this directly.
     /// Take a look at svn_repos_open3() `Repos::open` instead.
     ///
     /// `svn_fs_open2`
