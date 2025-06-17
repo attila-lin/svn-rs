@@ -15,6 +15,8 @@ mod root;
 
 pub use node::NodeRevision;
 
+mod util;
+
 use std::collections::HashMap;
 use std::fmt::Debug;
 

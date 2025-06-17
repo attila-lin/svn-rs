@@ -17,7 +17,7 @@ pub struct AppArgs {
     #[arg(long = "drop-empty-revs")]
     drop_empty_revs: bool,
     /// Remove all empty revisions found in dumpstream,
-    ///                              except revision 0.
+    /// except revision 0.
     #[arg(long = "drop-all-empty-revs")]
     drop_all_empty_revs: bool,
     /// Renumber revisions left after filtering.
