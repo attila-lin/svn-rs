@@ -4,6 +4,8 @@
 
 use std::collections::HashMap;
 
+use crate::authz::AuthzFull;
+
 use super::AuthzAcl;
 
 /// Temporary ACL constructed by the parser.
@@ -49,3 +51,44 @@ const ANON_ACCESS_TOKEN: &str = "$anonymous";
 const AUTHN_ACCESS_TOKEN: &str = "$authenticated";
 /// Fake token for inverted rights.
 const NEG_ACCESS_TOKEN: &str = "~~$inverted";
+
+#[derive(Debug, thiserror::Error)]
+pub enum ParseError {
+    #[error(transparent)]
+    Io(#[from] std::io::Error),
+}
+
+pub type Section = HashMap<String, String>;
+
+use chumsky::prelude::*;
+
+#[derive(Debug)]
+pub struct AuthzParser {
+    global: HashMap<String, String>,
+    sections: HashMap<String, Section>,
+}
+
+impl AuthzParser {
+    pub fn parse_file<P>(file: P) -> Result<AuthzFull, ParseError>
+    where
+        P: AsRef<std::path::Path>,
+    {
+        let input = fs_err::fs::read_to_string(file)?;
+        Self::parse(&input)
+    }
+
+    pub fn parse(input: &str) -> Result<AuthzFull, ParseError> {
+        let mut authz_full = AuthzFull::default();
+        Ok(authz_full)
+    }
+
+    fn _parse<'a>() -> Parser<'a, &'a str, Self, extra::Err<Rich<'a, char>>> {
+        recursive(|value| {
+            // let
+            todo!()
+            // choice((
+            //     just()
+            // ))
+        })
+    }
+}

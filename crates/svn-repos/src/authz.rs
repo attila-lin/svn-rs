@@ -2,6 +2,7 @@
 
 mod info;
 mod parse;
+pub use parse::AuthzParser;
 
 use std::collections::HashMap;
 use std::sync::Arc;
