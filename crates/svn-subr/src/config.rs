@@ -6,6 +6,7 @@ use std::path::Path;
 #[derive(Debug)]
 pub struct SvnConfig {}
 
+#[allow(missing_docs)]
 #[derive(Debug, thiserror::Error)]
 pub enum ConfigError {}
 

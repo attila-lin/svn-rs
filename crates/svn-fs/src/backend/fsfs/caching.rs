@@ -36,6 +36,7 @@ const SVN_FS_CONFIG_FSFS_CACHE_FULLTEXTS: &str = "fsfs-cache-fulltexts";
 /// @since New in 1.10.
 const SVN_FS_CONFIG_FSFS_CACHE_NODEPROPS: &str = "fsfs-cache-nodeprops";
 
+#[allow(missing_docs)]
 #[derive(Debug, thiserror::Error)]
 pub enum CachingError {
     #[error(transparent)]

@@ -10,6 +10,7 @@ use std::fmt::Debug;
 use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::{Arc, Mutex, RwLock};
 
+#[allow(missing_docs)]
 #[derive(Debug, thiserror::Error)]
 pub enum CacheError {
     #[error("cache full")]

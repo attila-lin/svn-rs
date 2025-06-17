@@ -1,7 +1,7 @@
 #[allow(missing_docs)]
 #[derive(Debug, thiserror::Error)]
 pub enum Error {
-    #[error("IO error: {0}")]
+    #[error(transparent)]
     Io(#[from] std::io::Error),
 
     #[error("UnsupportedFsType: {0:?}")]

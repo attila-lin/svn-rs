@@ -18,4 +18,7 @@ pub enum BackendError {
 
     #[error(transparent)]
     Config(#[from] svn_subr::config::ConfigError),
+
+    #[error(transparent)]
+    Caching(#[from] crate::backend::fsfs::CachingError),
 }

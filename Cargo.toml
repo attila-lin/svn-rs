@@ -40,5 +40,9 @@ uuid = { version = "1", features = ["v4"] }
 # parser
 chumsky = "0.10.1"
 
-rstest = "0.25"
+# tls
+openssl = { version = "0.10" }
+rustls = { version = "0.23" }
+
 # test
+rstest = "0.25"

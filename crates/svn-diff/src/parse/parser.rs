@@ -14,6 +14,7 @@ enum LastLineType {
     Context,
 }
 
+#[allow(missing_docs)]
 #[derive(Debug, thiserror::Error)]
 pub enum ParseError {}
 

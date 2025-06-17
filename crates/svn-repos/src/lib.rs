@@ -6,6 +6,8 @@ pub use authz::AuthzParser;
 pub use authz::SvnAuthz;
 
 mod config;
-mod repos;
 
+mod repos;
 pub use repos::Repos;
+
+pub mod delta;

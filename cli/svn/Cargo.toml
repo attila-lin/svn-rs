@@ -7,3 +7,12 @@ authors.workspace = true
 [dependencies]
 clap = { workspace = true }
 anyhow = { workspace = true }
+
+openssl = { workspace = true, optional = true }
+rustls = { workspace = true, optional = true }
+
+[features]
+default = []
+
+openssl = ["dep:openssl"]
+rustls = ["dep:rustls"]

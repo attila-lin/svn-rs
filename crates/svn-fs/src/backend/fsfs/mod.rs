@@ -4,7 +4,10 @@ mod data;
 pub use data::FsFsData;
 
 mod caching;
+pub use caching::CachingError;
+
 mod fs;
+
 mod vtable;
 
 use std::path::PathBuf;

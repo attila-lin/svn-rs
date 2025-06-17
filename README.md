@@ -22,11 +22,14 @@ This project is a work in progress and is not yet functional. It is intended to 
 - No early version support
   - BDB support
 - All deprecated features and functions are removed
+- **ra-serf**: will never be supported currently
+- **mod_authz_svn**: will never be supported currently
+- **mod_dav_svn**: will never be supported currently
 
 ### New features
 
 - More configuration file types
-  - TOML, JSON, YAML
+  - `TOML`, `JSON`, `YAML` and more
 - Async support
 
 ## Some Improvements

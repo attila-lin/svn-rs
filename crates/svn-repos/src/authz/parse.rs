@@ -52,6 +52,7 @@ const AUTHN_ACCESS_TOKEN: &str = "$authenticated";
 /// Fake token for inverted rights.
 const NEG_ACCESS_TOKEN: &str = "~~$inverted";
 
+#[allow(missing_docs)]
 #[derive(Debug, thiserror::Error)]
 pub enum ParseError {
     #[error(transparent)]
