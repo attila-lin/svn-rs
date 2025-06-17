@@ -1269,6 +1269,10 @@ dependencies = [
 [[package]]
 name = "svnmucc"
 version = "0.0.0"
+dependencies = [
+ "anyhow",
+ "clap",
+]
 
 [[package]]
 name = "svnserve"
