@@ -39,3 +39,6 @@ uuid = { version = "1", features = ["v4"] }
 
 # parser
 chumsky = "0.10.1"
+
+rstest = "0.25"
+# test

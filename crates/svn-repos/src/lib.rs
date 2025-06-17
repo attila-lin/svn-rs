@@ -1,7 +1,7 @@
 mod error;
 pub use error::Error;
 
-mod authz;
+pub mod authz;
 pub use authz::AuthzParser;
 pub use authz::SvnAuthz;
 

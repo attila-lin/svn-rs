@@ -16,3 +16,6 @@ bytes = { workspace = true }
 fs-err = { workspace = true }
 
 chumsky = { workspace = true } # For parsing authz
+
+[dev-dependencies]
+rstest = { workspace = true }
