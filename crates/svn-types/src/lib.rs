@@ -11,6 +11,9 @@ pub use lock::SvnLock;
 
 pub use directory_entry::DirectoryEntry;
 
+mod merge;
+pub use merge::MergeRange;
+
 /// A revision number.
 ///
 /// @note Update svnxx/revision.hpp when changing this typedef.

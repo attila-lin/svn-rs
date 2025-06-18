@@ -11,3 +11,6 @@ mod repos;
 pub use repos::Repos;
 
 pub mod delta;
+
+pub mod hooks;
+pub use hooks::Hook;

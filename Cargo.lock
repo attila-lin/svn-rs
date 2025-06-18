@@ -1132,6 +1132,7 @@ dependencies = [
 name = "svn-client"
 version = "0.0.0"
 dependencies = [
+ "svn-wc",
  "thiserror 2.0.12",
 ]
 
