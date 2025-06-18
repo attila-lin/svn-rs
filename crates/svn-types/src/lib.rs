@@ -2,14 +2,15 @@ mod node_kind;
 pub use node_kind::NodeKind;
 
 mod commit_info;
+
 mod depth;
 pub use depth::Depth;
 
 mod directory_entry;
+pub use directory_entry::DirectoryEntry;
+
 mod lock;
 pub use lock::SvnLock;
-
-pub use directory_entry::DirectoryEntry;
 
 mod merge;
 pub use merge::MergeRange;
