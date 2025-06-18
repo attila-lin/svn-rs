@@ -11,28 +11,27 @@ use svn_wc::WcContext;
 ///
 /// `svn_client_ctx_t`
 pub struct SvnClientCtx {
-    /** main authentication baton. */
+    /// main authentication baton.
     auth_baton: AuthBaton,
 
-    /** notification callback function.
-     * This will be called by notify_func2() by default.
-     * @deprecated Provided for backward compatibility with the 1.1 API.
-     * Use @c notify_func2 instead. */
+    /// notification callback function.
+    /// This will be called by notify_func2() by default.
+    /// @deprecated Provided for backward compatibility with the 1.1 API.
+    /// Use @c notify_func2 instead.
     notify_func: NotifyFunc,
-    /** Log message callback function.  NULL means that Subversion
-     * should try not attempt to fetch a log message.
-     * @deprecated Provided for backward compatibility with the 1.2 API.
-     * Use @c log_msg_func2 instead. */
+    /// Log message callback function.  NULL means that Subversion
+    /// should try not attempt to fetch a log message.
+    /// @deprecated Provided for backward compatibility with the 1.2 API.
+    /// Use @c log_msg_func2 instead.
     log_msg_fun: GetCommitLog,
 
-    /** a hash mapping of <tt>const char *</tt> configuration file names to
-     * #svn_config_t *'s. For example, the '~/.subversion/config' file's
-     * contents should have the key "config".  May be left unset (or set to
-     * NULL) to use the built-in default settings and not use any configuration.
-     */
+    /// a hash mapping of <tt>const char *</tt> configuration file names to
+    ///  * #svn_config_t *'s. For example, the '~/.subversion/config' file's
+    ///  * contents should have the key "config".  May be left unset (or set to
+    ///  * NULL) to use the built-in default settings and not use any configuration.
     config: HashMap<String, String>,
-    /** a callback to be used to see if the client wishes to cancel the running
-     * operation. */
+    /// a callback to be used to see if the client wishes to cancel the running
+    /// operation.
     cancel_trait: Box<dyn CancelTrait>,
 
     /// MIME types map.

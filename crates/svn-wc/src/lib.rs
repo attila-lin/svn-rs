@@ -4,6 +4,7 @@ pub use db::WcDb;
 
 mod ctx;
 pub use ctx::WcContext;
+
 mod entries;
 mod info;
 mod root;

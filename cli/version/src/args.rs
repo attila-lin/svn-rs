@@ -52,7 +52,7 @@ impl AppArgs {
     pub fn run(&self) -> anyhow::Result<()> {
         let local_abspath = "TODO:";
 
-        let wc_ctx = svn_wc::Context::new();
+        let wc_ctx = svn_wc::WcContext::new();
 
         let res = wc_ctx.revision_status(local_abspath, &self.trail_url, self.committed)?;
 

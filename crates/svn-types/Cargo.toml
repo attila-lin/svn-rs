@@ -6,3 +6,5 @@ authors.workspace = true
 
 [dependencies]
 strum.workspace = true
+
+mime = "0.3.17"
