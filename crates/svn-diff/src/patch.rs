@@ -33,7 +33,7 @@ pub struct SvnPatch {
     hunks: Vec<SvnDiffHunk>,
 }
 
-//// A single hunk inside a patch.
+/// A single hunk inside a patch.
 ///
 /// The lines of text comprising the hunk can be interpreted in three ways:
 /// - diff text       The hunk as it appears in the unidiff patch file,
