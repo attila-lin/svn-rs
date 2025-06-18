@@ -4,6 +4,8 @@ pub mod parse_diff;
 
 mod file;
 
+pub mod binary_diff;
+
 mod parse;
 pub use parse::DiffPatchParser;
 
