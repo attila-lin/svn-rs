@@ -26,9 +26,9 @@ pub struct SvnClientCtx {
     log_msg_fun: GetCommitLog,
 
     /// a hash mapping of <tt>const char *</tt> configuration file names to
-    ///  * #svn_config_t *'s. For example, the '~/.subversion/config' file's
-    ///  * contents should have the key "config".  May be left unset (or set to
-    ///  * NULL) to use the built-in default settings and not use any configuration.
+    /// #svn_config_t *'s. For example, the '~/.subversion/config' file's
+    /// contents should have the key "config".  May be left unset (or set to
+    /// NULL) to use the built-in default settings and not use any configuration.
     config: HashMap<String, String>,
     /// a callback to be used to see if the client wishes to cancel the running
     /// operation.

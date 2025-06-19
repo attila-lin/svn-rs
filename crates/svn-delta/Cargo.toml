@@ -1,7 +1,9 @@
 [package]
 name = "svn-delta"
 version.workspace = true
-edition.workspace = true
 authors.workspace = true
+edition.workspace = true
 
 [dependencies]
+svn-types = { workspace = true }
+thiserror = { workspace = true }

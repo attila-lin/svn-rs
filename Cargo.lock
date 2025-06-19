@@ -1145,6 +1145,10 @@ dependencies = [
 [[package]]
 name = "svn-delta"
 version = "0.0.0"
+dependencies = [
+ "svn-types",
+ "thiserror 2.0.12",
+]
 
 [[package]]
 name = "svn-diff"
@@ -1214,6 +1218,7 @@ version = "0.0.0"
 dependencies = [
  "mime",
  "strum",
+ "thiserror 2.0.12",
 ]
 
 [[package]]

@@ -1,8 +1,11 @@
-mod mime;
+pub mod mime;
+
 mod node_kind;
 pub use node_kind::NodeKind;
 
 mod commit_info;
+
+pub mod error;
 
 mod depth;
 pub use depth::Depth;

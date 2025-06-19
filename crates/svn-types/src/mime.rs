@@ -19,12 +19,12 @@ pub fn mime_type_validate(mime_type: &str) -> Result<(), Error> {
 /// cases (for example, "image/x-xbitmap").
 ///
 /// `svn_mime_type_is_binary`
-pub fn is_binary(mime_type: &str) -> bool {
+pub fn is_binary(mime_type: &str) -> Result<bool, Error> {
     let mime: mime::Mime = mime_type
         .parse()
         .map_err(|_| Error::InvalidMimeType(mime_type.into()))?;
     if mime.type_() == mime::TEXT {
-        return false;
+        return Ok(false);
     }
-    true
+    Ok(true)
 }
