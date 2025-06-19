@@ -13,7 +13,7 @@ use svn_types::RevisionNumber;
 /// `svn_editor_t`
 pub struct SvnEditor {
     baton: Option<Box<dyn std::any::Any>>,
-    /* Standard cancellation function. Called before each callback.  */
+    /// Standard cancellation function. Called before each callback.
     cancel_func: Box<dyn Fn(&SvnEditor) -> bool>,
     /* Our callback functions match that of the set-many structure, so
     just use that.  */
@@ -23,7 +23,7 @@ pub struct SvnEditor {
 pub trait DeltaEditor {
     fn set_target_revision(&self, target_revision: RevisionNumber) -> Result<(), EditorError>;
     fn add_item(
-        &self,
+        &mut self,
         path: &Path,
         parent_baton: (),
         conpyfrom_path: &Path,
@@ -32,7 +32,7 @@ pub trait DeltaEditor {
     fn open_root(&self, base_revison: RevisionNumber) -> Result<(), EditorError>;
 
     fn delete_entry(
-        &self,
+        &mut self,
         path: &Path,
         revision: RevisionNumber,
         parent_baton: (),

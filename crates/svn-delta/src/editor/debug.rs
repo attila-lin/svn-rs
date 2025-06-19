@@ -13,13 +13,13 @@ pub struct EditorBaton {
     prefix: String,
 }
 
-impl Editor for EditorBaton {
+impl DeltaEditor for EditorBaton {
     fn set_target_revision(&self, target_revision: RevisionNumber) -> Result<(), EditorError> {
         todo!()
     }
 
     fn add_item(
-        &self,
+        &mut self,
         path: &std::path::Path,
         parent_baton: (),
         conpyfrom_path: &std::path::Path,
@@ -29,7 +29,7 @@ impl Editor for EditorBaton {
     }
 
     fn delete_entry(
-        &self,
+        &mut self,
         path: &std::path::Path,
         revision: RevisionNumber,
         parent_baton: (),
@@ -54,7 +54,7 @@ impl Editor for EditorBaton {
         todo!()
     }
 
-    fn open_root(&self, base_revison: RevisionNumber) -> Result<(), EditorError> {
+    fn open_root(&mut self, base_revison: RevisionNumber) -> Result<(), EditorError> {
         self.write_indent()?;
         println!("open_root: {base_revison}");
         self.indent_level += 1;

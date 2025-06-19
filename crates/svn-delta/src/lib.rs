@@ -11,3 +11,6 @@ mod svndiff;
 pub mod editor;
 
 pub mod compose_delta;
+
+pub mod window;
+pub use window::TxdeltaWindow;
