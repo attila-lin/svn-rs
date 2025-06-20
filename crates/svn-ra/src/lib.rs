@@ -2,7 +2,7 @@ mod capability;
 mod loader;
 mod ra_layer;
 pub mod session;
-mod svn;
+pub mod svn;
 
 mod connection;
 pub use capability::RaCapability;

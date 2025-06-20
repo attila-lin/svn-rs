@@ -57,7 +57,7 @@ pub struct Repository {
     max_ssf: u32,
 
     /// access granted to authenticated users
-    auth_access: AccessType,
+    pub auth_access: AccessType,
     /// access granted to anonymous users
     anonymous_access: AccessType,
 }

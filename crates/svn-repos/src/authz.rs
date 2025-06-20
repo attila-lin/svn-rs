@@ -576,7 +576,7 @@ pub struct SvnAuthz {
     /// The parsed and pre-processed contents of the authz file.
     full: AuthzFull,
 
-    ///  Identifies the authz model content
+    /// Identifies the authz model content
     /// (a hash value that can be used for e.g. cache lookups).
     authz_id: Bytes,
 

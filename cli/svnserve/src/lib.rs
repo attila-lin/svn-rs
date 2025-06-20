@@ -1,4 +1,5 @@
 mod repository;
+pub mod serve;
 pub use repository::Repository;
 
 mod client_info;
@@ -8,6 +9,9 @@ mod args;
 mod connection;
 
 mod constant;
+
+#[cfg(feature = "_sasl")]
+pub mod cyrus_auth;
 
 pub use args::AppArgs;
 
@@ -55,7 +59,7 @@ pub enum AccessType {
 /// `server_baton_t`
 pub struct ServerBaton {
     /// repository-specific data to use
-    repository: Repository,
+    pub repository: Repository,
     /// client-specific data to use
     client_info: ClientInfo,
 
