@@ -5,6 +5,7 @@ name = "svn-client"
 version.workspace = true
 
 [dependencies]
+svn-subr = { workspace = true }
 svn-types = { workspace = true }
 svn-wc = { workspace = true }
 

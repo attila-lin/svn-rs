@@ -479,7 +479,7 @@ pub enum NotifyAction {
 ///
 /// `svn_wc_notify_state_t`
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-enum NotifyState {
+pub enum NotifyState {
     Inapplicable = 0,
 
     /// Notifier doesn't know or isn't saying.
@@ -506,3 +506,20 @@ enum NotifyState {
     /// The source to copy the file from is missing.
     SourceMissing,
 }
+
+/// Notify the world that @a notify->action has happened to @a notify->path.
+///
+/// Recommendation: callers of #svn_wc_notify_func2_t should avoid
+/// invoking it multiple times on the same path within a given
+/// operation, and implementations should not bother checking for such
+/// duplicate calls.  For example, in an update, the caller should not
+/// invoke the notify func on receiving a prop change and then again
+/// on receiving a text change.  Instead, wait until all changes have
+/// been received, and then invoke the notify func once (from within
+/// an #svn_delta_editor_t's close_file(), for example), passing
+/// the appropriate @a notify->content_state and @a notify->prop_state flags.
+///
+/// @since New in 1.2.
+///
+/// `svn_wc_notify_func2_t`
+pub type NotifyFunc = Box<dyn Fn() -> ()>;

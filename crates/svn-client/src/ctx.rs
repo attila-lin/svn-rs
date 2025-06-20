@@ -1,8 +1,8 @@
 use std::collections::HashMap;
 
 use svn_subr::auth::AuthBaton;
-use svn_wc::NotifyFunc;
 use svn_wc::WcContext;
+use svn_wc::notify::NotifyFunc;
 
 /// Private client context.
 ///

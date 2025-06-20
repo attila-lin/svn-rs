@@ -17,5 +17,5 @@ mod status;
 mod error;
 pub use error::Error;
 
-mod notify;
+pub mod notify;
 pub use notify::Notify;

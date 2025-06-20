@@ -2,6 +2,8 @@
 
 use std::{collections::HashMap, path::PathBuf};
 
+use svn_types::RevisionNumber;
+
 /// The metadata associated with a particular revision.
 /// `rev`
 pub struct Rev {
