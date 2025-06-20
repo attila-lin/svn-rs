@@ -106,7 +106,7 @@ pub struct PathAccess {
     /// If multiple rules apply to the same path (only possible with wildcard
     /// matching), the one with the highest SEQUENCE_NUMBER wins, i.e. the latest
     /// one defined in the authz file.
-    //
+    ///
     /// A value of 0 denotes the default rule at the repository root denying
     /// access to everybody.  User-defined path rules start with ID 1.
     pub sequence_number: i32,
@@ -134,6 +134,12 @@ pub struct LimitedRights {
 }
 
 impl LimitedRights {
+    /// Return TRUE, if RIGHTS has local rights defined in the ACCESS member.
+    ///
+    /// `has_local_rights`
+    pub fn has_local_rights(&self) -> bool {
+        self.access.sequence_number != 0
+    }
     /// Aggregate the ACCESS spec of TARGET and RIGHTS into TARGET.  I.e. if both
     /// are specified, pick one in accordance to the precedence rules.
     ///
@@ -167,12 +173,12 @@ pub struct AuthzRights {
 }
 
 impl Default for AuthzRights {
-    // Initialize a rights structure.
-    // The minimum rights start with all available access and are later
-    // bitwise-and'ed with actual access rights. The maximum rights begin
-    // empty and are later bitwise-and'ed with actual rights.
-    //
-    // `init_rights`
+    /// Initialize a rights structure.
+    /// The minimum rights start with all available access and are later
+    /// bitwise-and'ed with actual access rights. The maximum rights begin
+    /// empty and are later bitwise-and'ed with actual rights.
+    ///
+    /// `init_rights`
     fn default() -> Self {
         Self {
             min_access: AuthzAccess::WRITE,
@@ -316,7 +322,8 @@ impl LookupState {
     }
 
     /// Scan the PREFIXES array of node_t* for all entries whose SEGMENT members
-    //  are prefixes of SEGMENT.  Add these to STATE for the next tree level.
+    ///  are prefixes of SEGMENT.  Add these to STATE for the next tree level.
+    ///
     /// `add_prefix_matches`
     pub fn add_prefix_matches(&mut self, prefixes: &[SortedPattern], segment: &str) {
         for prefix in prefixes {
@@ -373,17 +380,17 @@ pub enum AuthzRuleSegmentKind {
     /// default no-access ACE will not be applied correctly.
     Literal,
     /// A prefix match: a literal string followed by '*'.
-    //  The path segment must begin with the literal prefix.
+    ///  The path segment must begin with the literal prefix.
     Prefix,
 
     /// A suffix match: '*' followed by a literal string.
-    //  The path segment must end with the literal suffix.
-    //  The pattern is stored reversed, so that the matching code can
-    //  perform a prefix match on the reversed path segment.
+    ///  The path segment must end with the literal suffix.
+    ///  The pattern is stored reversed, so that the matching code can
+    ///  perform a prefix match on the reversed path segment.
     Suffix,
     /// '*'
-    //  Matches any single non-empty path segment.
-    //  The pattern will be an empty string.
+    ///  Matches any single non-empty path segment.
+    ///  The pattern will be an empty string.
     AnySegment,
 
     /// '**'
@@ -395,6 +402,7 @@ pub enum AuthzRuleSegmentKind {
 }
 
 /// Rule path segment descriptor.
+///
 /// `authz_rule_segment_t`
 pub struct AuthzRuleSegment {
     pub kind: AuthzRuleSegmentKind,

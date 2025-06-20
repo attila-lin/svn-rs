@@ -1,4 +1,4 @@
-//! `svn_error_codes`
+//! `svn_error_codes.h`
 
 #[allow(missing_docs)]
 #[derive(Debug, thiserror::Error)]
