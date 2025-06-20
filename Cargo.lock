@@ -1295,6 +1295,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "svnsync"
+version = "0.0.0"
+dependencies = [
+ "anyhow",
+ "clap",
+ "svn-delta",
+ "svn-ra",
+ "svn-subr",
+]
+
+[[package]]
 name = "svnversion"
 version = "0.0.0"
 dependencies = [

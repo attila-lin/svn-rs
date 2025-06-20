@@ -1,0 +1,12 @@
+[package]
+name = "svnsync"
+version.workspace = true
+authors.workspace = true
+edition.workspace = true
+
+[dependencies]
+anyhow = { workspace = true }
+clap = { workspace = true }
+svn-delta = { workspace = true }
+svn-ra = { workspace = true }
+svn-subr = { workspace = true }

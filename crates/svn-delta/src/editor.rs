@@ -29,7 +29,7 @@ pub trait DeltaEditor {
         conpyfrom_path: &Path,
         copyfrom_revison: RevisionNumber,
     ) -> Result<(), EditorError>;
-    fn open_root(&self, base_revison: RevisionNumber) -> Result<(), EditorError>;
+    fn open_root(&mut self, base_revison: RevisionNumber) -> Result<(), EditorError>;
 
     fn delete_entry(
         &mut self,

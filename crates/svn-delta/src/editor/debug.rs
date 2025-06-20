@@ -38,7 +38,7 @@ impl DeltaEditor for EditorBaton {
         println!("delete_entry: {} at revision {}", path.display(), revision);
         self.indent_level += 1;
 
-        if let Some(editor) = &self.wrapped_editor {
+        if let Some(editor) = &mut self.wrapped_editor {
             editor.delete_entry(path, revision, parent_baton)?;
         }
 
@@ -59,7 +59,7 @@ impl DeltaEditor for EditorBaton {
         println!("open_root: {base_revison}");
         self.indent_level += 1;
 
-        if let Some(editor) = &self.wrapped_editor {
+        if let Some(editor) = &mut self.wrapped_editor {
             editor.open_root(base_revison)?;
         }
 
