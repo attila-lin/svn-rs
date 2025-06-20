@@ -1,10 +1,12 @@
 [package]
+authors.workspace = true
+edition.workspace = true
 name = "svn-client"
 version.workspace = true
-edition.workspace = true
-authors.workspace = true
 
 [dependencies]
+svn-types = { workspace = true }
 svn-wc = { workspace = true }
 
 thiserror = { workspace = true }
+uuid = { workspace = true }

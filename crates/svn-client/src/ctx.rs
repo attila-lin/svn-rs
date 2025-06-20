@@ -1,5 +1,6 @@
 use std::collections::HashMap;
 
+use svn_subr::auth::AuthBaton;
 use svn_wc::NotifyFunc;
 use svn_wc::WcContext;
 
@@ -18,6 +19,8 @@ pub struct PrivateCtx {
     /// Total number of bytes transferred over network across all RA sessions.
     total_progress: usize,
 }
+/// `svn_client_get_commit_log2_t`
+type GetCommitLog = Box<dyn Fn(&Vec<()>) -> Result<(Vec<String>, Vec<String>), ()>>;
 
 /// A client context structure, which holds client specific callbacks,
 /// batons, serves as a cache for configuration options, and other various

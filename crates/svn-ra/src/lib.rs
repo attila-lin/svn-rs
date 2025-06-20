@@ -4,4 +4,6 @@ mod ra_layer;
 pub mod session;
 mod svn;
 
+mod connection;
 pub use capability::RaCapability;
+pub use connection::Connection;

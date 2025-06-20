@@ -1,22 +1,24 @@
 [package]
 name = "svnserve"
 version.workspace = true
-edition.workspace = true
 authors.workspace = true
+edition.workspace = true
 
 [dependencies]
-svn-subr = { workspace = true }
-
+anyhow = { workspace = true }
+clap = { workspace = true }
+dotenvy = { version = "0.15" }
+socket2 = "0.5"
 svn-fs = { workspace = true }
-
 svn-ra = { workspace = true }
 svn-repos = { workspace = true }
-
-
-clap = { workspace = true }
-anyhow = { workspace = true }
-
+svn-subr = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { version = "0.3", features = [] }
 uuid = { workspace = true }
 
 
-socket2 = "0.5"
+[features]
+default = []
+
+_sasl = []

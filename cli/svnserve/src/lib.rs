@@ -51,3 +51,16 @@ pub enum AccessType {
     Read,
     Write,
 }
+
+/// `server_baton_t`
+pub struct ServerBaton {
+    /// repository-specific data to use
+    repository: Repository,
+    /// client-specific data to use
+    client_info: ClientInfo,
+
+    /// Disallow write access (global flag)
+    read_only: bool,
+    /// Use virtual-host-based path to repo
+    vhost: bool,
+}

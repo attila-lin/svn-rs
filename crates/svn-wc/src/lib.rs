@@ -6,7 +6,10 @@ mod ctx;
 pub use ctx::WcContext;
 
 mod entries;
-mod info;
+
+pub mod info;
+pub use info::WcInfo;
+
 mod root;
 mod sqlite;
 mod status;

@@ -1,5 +1,8 @@
 //! session
 
+use svn_subr::auth::AuthBaton;
+
+use crate::Connection;
 /* The RA session object. */
 /// A repository access session.  This object is used to perform requests
 /// to a repository, identified by a URL.
@@ -54,4 +57,41 @@ impl RaSession for SvnRaSession {
     {
         todo!()
     }
+}
+
+/// `svn_ra_svn__session_baton_t`
+pub struct SessionBaton {
+    conn: Connection,
+    is_tunneled: bool,
+    auth_baton: AuthBaton,
+    parent: Parent,
+    user: String,
+    /// The remote hostname
+    hostname: String,
+    realm_prefix: String,
+    tunnel_name: Option<String>,
+    tunnel_args: Vec<String>,
+    config: HashMap<String, String>,
+    bytes_read: u64,
+    bytes_written: u64,
+
+    useragent: String,
+}
+
+/// The session's URL state for client and server side.
+///
+/// This keeps track of the respective client-side and server-side "parent"
+/// URLs.  It tells us whether we may have to send reparent commands to the
+/// server and how to tweak path parameters when we decided to handle
+/// reparent requests on the client side only.
+///
+/// `svn_ra_svn__parent_t`
+pub struct Parent {
+    /// Client-side session base URL, i.e. client's parent path.
+    client_url: String,
+    /// Server-side base URL, i.e. server's parent path.
+    server_url: String,
+    /// Relative path to add to a client-side parameter to translate it for the
+    /// server-side.  I.e. the relative path from SERVER_URL to CLIENT_URL.
+    path: String,
 }

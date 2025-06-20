@@ -39,6 +39,7 @@ This project is a work in progress and is not yet functional. It is intended to 
 ## Some Improvements
 
 - Better cross-platform support: Linux, macOS, Windows, WASM and more
+- Less code, less complexity, less bugs
 - Performance improvements: SIMD, asynchronous I/O, and more
 - Better error handling
 - Better Type Definition

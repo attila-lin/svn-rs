@@ -1,13 +1,15 @@
 [package]
-name = "svn-ra"
-version.workspace = true
 authors.workspace = true
 edition.workspace = true
+name = "svn-ra"
+version.workspace = true
 
 [dependencies]
 strum = { workspace = true }
 svn-subr.workspace = true
 
+bytes = { workspace = true }
+thiserror = { workspace = true }
 [features]
-_sasl = []  # SVN_HAVE_SASL
+_sasl = [] # SVN_HAVE_SASL
 default = []

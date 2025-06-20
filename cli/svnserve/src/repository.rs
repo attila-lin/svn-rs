@@ -49,6 +49,13 @@ pub struct Repository {
     /// always false if `SVN_HAVE_SASL` not defined
     use_sasl: bool,
 
+    /// min-encryption SASL parameter
+    #[cfg(features = "_sasl")]
+    min_ssf: u32,
+    /// max-encryption SASL parameter
+    #[cfg(features = "_sasl")]
+    max_ssf: u32,
+
     /// access granted to authenticated users
     auth_access: AccessType,
     /// access granted to anonymous users
