@@ -19,6 +19,7 @@ This project is a work in progress and is not yet functional. It is intended to 
 ### Do not support any more
 
 - No DVA
+- No single thread support anymore
 - No early version support
   - BDB support
 - All deprecated features and functions are removed

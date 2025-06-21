@@ -1,7 +1,8 @@
 //! `authz.h`/`authz.c` bindings for SVN repositories.
 
-mod info;
-mod parse;
+pub mod construction;
+pub mod info;
+pub mod parse;
 pub use parse::AuthzParser;
 
 use std::collections::HashMap;
@@ -61,6 +62,12 @@ pub struct Node {
 
     /// If not NULL, this contains the pattern-based segment sub-nodes.
     pattern_sub_nodes: Option<Box<NodePattern>>,
+}
+
+impl Node {
+
+    /* Auto-create the PATTERN_SUB_NODES sub-structure in *NODE and return it. */
+    pub fn ensure_
 }
 
 /// Since prefix arrays may have more than one hit, we need to link them
@@ -365,6 +372,8 @@ impl LookupState {
 }
 
 /// The segment type.
+/// `authz_rule_segment_t`
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum AuthzRuleSegmentKind {
     /// A literal string match.
     /// The path segment must exactly match the pattern.

@@ -1,6 +1,7 @@
 //!
 
 /// `svn_diff__type_e`
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum DiffType {
     Common,
     DiffModified,
@@ -16,7 +17,6 @@ pub enum DiffType {
 ///
 /// `svn_diff_t`
 pub struct SvnDiff {
-    next: Box<SvnDiff>,
     r#type: DiffType,
 
     original_start: i64,
