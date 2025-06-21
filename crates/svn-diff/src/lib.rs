@@ -6,6 +6,7 @@ mod file;
 
 pub mod binary_diff;
 
+pub mod diff;
 mod parse;
 pub use parse::DiffPatchParser;
 

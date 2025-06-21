@@ -1,4 +1,5 @@
 mod checksum;
+pub mod opt;
 
 pub use checksum::Checksum;
 pub use checksum::ChecksumKind;

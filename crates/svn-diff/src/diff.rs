@@ -6,7 +6,7 @@ pub enum DiffType {
     DiffModified,
     DiffLatest,
     DiffCommon,
-    Conflict
+    Conflict,
 }
 
 /// An opaque type that represents a difference between either two or
@@ -26,5 +26,5 @@ pub struct SvnDiff {
     latest_start: i64,
     latest_len: i64,
 
-    resolved_diff: Box<SvnDiff>
+    resolved_diff: Box<SvnDiff>,
 }

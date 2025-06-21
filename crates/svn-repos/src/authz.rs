@@ -307,11 +307,6 @@ pub struct LookupState {
 }
 
 impl LookupState {
-    // /// `create_lookup_state`
-    // fn new() -> Self {
-    //     Self::default()
-    // }
-
     /// If PREFIX is indeed a prefix (or exact match) or SEGMENT, add the
     /// node in PREFIX to STATE.
     pub fn add_if_prefix_matches(&mut self, prefix: &SortedPattern, segment: &str) {

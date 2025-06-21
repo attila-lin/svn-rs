@@ -30,6 +30,55 @@ pub struct AppArgs {
     #[arg(long = "non-interactive")]
     non_interactive: bool,
 
+    /// with --non-interactive, accept SSL
+    /// server certificates with failures.
+    /// ARG is a comma-separated list of:
+    /// - 'unknown-ca': Unknown Authority
+    /// - 'cn-mismatch': Hostname mismatch
+    /// - 'expired': Expired certificate
+    /// - 'not-yet-valid': Not yet valid certificate
+    /// - 'other': all other not separately classified certificate errors
+    ///
+    /// Applied to the source URL.
+    #[arg(long = "source-trust-server-cert-failures", value_name = "ARG")]
+    source_trust_server_cert_failures: Option<String>,
+
+    /// Like
+    /// --source-trust-server-cert-failures,
+    /// but applied to the destination URL.
+    #[arg(long = "sync-trust-server-cert-failures", value_name = "ARG")]
+    sync_trust_server_cert_failures: Option<String>,
+
+    /// connect to source repository with username ARG
+    #[arg(long = "source-username", value_name = "ARG")]
+    source_username: Option<String>,
+
+    /// connect to sync repository with username ARG
+    #[arg(long = "sync-username", value_name = "ARG")]
+    sync_username: Option<String>,
+
+    /// connect to source repository with password ARG
+    #[arg(long = "source-password", value_name = "ARG")]
+    source_password: Option<String>,
+
+    /// connect to sync repository with password ARG
+    #[arg(long = "sync-password", value_name = "ARG")]
+    sync_password: Option<String>,
+
+    /// read user configuration files from directory ARG
+    #[arg(long = "config-dir", value_name = "ARG")]
+    config_dir: Option<String>,
+
+    /// set user configuration option in the format:
+    ///
+    ///   FILE:SECTION:OPTION=[VALUE]
+    ///
+    /// For example:
+    ///
+    ///   servers:global:http-library=serf
+    #[arg(long = "config-option", value_name = "FILE:SECTION:OPTION=[VALUE]")]
+    config_option: Option<String>,
+
     #[command(subcommand)]
     pub command: Option<SubCommand>,
 }
