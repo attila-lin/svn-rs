@@ -22,7 +22,7 @@ pub fn args_to_target(
     let mut rel_url_found = false;
 
     for target in known_targets {
-        if is_repos_relative_url(target) {
+        if path::is_repos_relative_url(target) {
             rel_url_found = true;
             break;
         }
@@ -33,7 +33,7 @@ pub fn args_to_target(
         // Relative urls will be canonicalized when they are resolved later in
         // the function
         if path::is_repos_relative_url(target) {
-            output_targets.push(target.to_owned());
+            output_targets.push(target.to_string());
         } else {
             // This is needed so that the target can be properly canonicalized,
             // otherwise the canonicalization does not treat a ".@BASE" as a "."
@@ -53,12 +53,13 @@ pub fn args_to_target(
             }
 
             /* URLs and wc-paths get treated differently. */
-            if path::is_url(true_target) {
-                true_target = opt::arg_canonicalize_url(true_target)
+            let true_target = if path::is_url(true_target) {
+                let true_target = opt::arg_canonicalize_url(true_target)
                     .map_err(|_| Error::BadFilename(true_target.to_string()))?;
+                true_target
             } else {
                 todo!()
-            }
+            };
         }
     }
 

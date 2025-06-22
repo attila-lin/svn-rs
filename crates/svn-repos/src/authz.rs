@@ -64,11 +64,7 @@ pub struct Node {
     pattern_sub_nodes: Option<Box<NodePattern>>,
 }
 
-impl Node {
-
-    /* Auto-create the PATTERN_SUB_NODES sub-structure in *NODE and return it. */
-    pub fn ensure_
-}
+impl Node {}
 
 /// Since prefix arrays may have more than one hit, we need to link them
 /// for fast lookup.

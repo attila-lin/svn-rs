@@ -3,6 +3,7 @@ use std::collections::HashMap;
 /// The main auth baton.
 ///
 /// `svn_auth_baton_t`
+#[derive(Debug, Default)]
 pub struct AuthBaton {
     /* run-time parameters needed by providers. */
     parameters: HashMap<String, String>,

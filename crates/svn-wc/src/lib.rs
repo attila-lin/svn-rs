@@ -1,3 +1,4 @@
+pub mod conflict;
 mod db;
 pub use db::DbStatus;
 pub use db::WcDb;

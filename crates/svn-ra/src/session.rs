@@ -1,5 +1,7 @@
 //! session
 
+use std::collections::HashMap;
+
 use svn_subr::auth::AuthBaton;
 
 use crate::Connection;

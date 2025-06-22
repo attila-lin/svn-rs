@@ -2,13 +2,17 @@ use std::collections::HashMap;
 
 use svn_subr::auth::AuthBaton;
 use svn_wc::WcContext;
+use svn_wc::conflict::WcConflictResolverFunc;
 use svn_wc::notify::NotifyFunc;
+
+use crate::cancel::CancelFunc;
 
 /// Private client context.
 ///
 /// This is what is actually allocated by svn_client_create_context2(),
 /// which then returns the address of the public_ctx member.
 /// `svn_client__private_ctx_t`
+#[derive(Debug, Clone)]
 pub struct PrivateCtx {
     /// Reserved field, always zero, to detect misuse of the private
     ///    context as a public client context.
@@ -19,6 +23,21 @@ pub struct PrivateCtx {
     /// Total number of bytes transferred over network across all RA sessions.
     total_progress: usize,
 }
+
+impl PrivateCtx {
+    const CLIENT_CTX_MAGIC: u64 = 0xDEADBEEF600DF00D;
+}
+
+impl Default for PrivateCtx {
+    fn default() -> Self {
+        Self {
+            magic_null: 0,
+            magic_id: Self::CLIENT_CTX_MAGIC,
+            total_progress: 0,
+        }
+    }
+}
+
 /// `svn_client_get_commit_log2_t`
 type GetCommitLog = Box<dyn Fn(&Vec<()>) -> Result<(Vec<String>, Vec<String>), ()>>;
 
@@ -52,13 +71,15 @@ pub struct SvnClientCtx {
     config: HashMap<String, String>,
     /// a callback to be used to see if the client wishes to cancel the running
     /// operation.
-    cancel_trait: Box<dyn CancelTrait>,
+    cancel_func: CancelFunc,
 
     /// MIME types map.
     mimetypes_map: HashMap<String, String>,
 
-    /// Conflict resolution callback and baton, if available.
-    conflict_trait: Option<Box<dyn ConflictTrait>>,
+    /// Conflict resolution callback and baton, if available. NULL means that
+    /// subversion should try @c conflict_func.
+    /// @since New in 1.7.
+    conflict_resolver_func: Option<WcConflictResolverFunc>,
 
     /// Custom client name string, or NULL.
     client_name: Option<String>,
@@ -69,20 +90,20 @@ pub struct SvnClientCtx {
 }
 
 impl SvnClientCtx {
-    const CLIENT_CTX_MAGIC: u64 = 0xDEADBEEF600DF00D;
-
     /// Create a new client context.
     /// `svn_client_create_context2`
     pub fn new(config: &HashMap<String, String>) -> Self {
         let mut ret = Self {
-            private_ctx: PrivateCtx {
-                magic_null: 0,
-                magic_id: Self::CLIENT_CTX_MAGIC,
-                total_progress: 0,
-            },
-
-            config,
+            private_ctx: PrivateCtx::default(),
+            config: config.clone(),
             wc_ctx: WcContext::new(),
+            auth_baton: AuthBaton::default(),
+            notify_func: Box::new(|| {}),
+            log_msg_fun: Box::new(|_| Ok((vec![], vec![]))),
+            cancel_func: Box::new(|| false), // Default cancel trait that never cancels
+            mimetypes_map: HashMap::new(),
+            conflict_resolver_func: None,
+            client_name: None,
         };
         ret
     }

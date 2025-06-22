@@ -80,4 +80,5 @@ pub fn blame(
     end: OptRevision,
     diff_options: DiffFileOptions,
 ) -> Result<(RevisionNumber, RevisionNumber), crate::Error> {
+    todo!()
 }

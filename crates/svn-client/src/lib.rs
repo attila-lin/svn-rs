@@ -1,5 +1,6 @@
 pub mod add;
 pub mod blame;
+pub mod cancel;
 pub mod cat;
 pub mod cmdline;
 pub mod ctx;

@@ -5,6 +5,8 @@ use uuid::Uuid;
 
 /// The type of status for the working copy.
 /// `svn_wc_status_kind`
+#[repr(u8)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum StatusKind {
     /// does not exist
     None = 1,
