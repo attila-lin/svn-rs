@@ -12,7 +12,8 @@ pub use info::WcInfo;
 
 mod root;
 mod sqlite;
-mod status;
+
+pub mod status;
 
 mod error;
 pub use error::Error;

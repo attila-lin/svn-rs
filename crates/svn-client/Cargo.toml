@@ -1,13 +1,14 @@
 [package]
-authors.workspace = true
-edition.workspace = true
 name = "svn-client"
 version.workspace = true
+authors.workspace = true
+edition.workspace = true
 
 [dependencies]
+svn-diff = { workspace = true }
 svn-subr = { workspace = true }
 svn-types = { workspace = true }
 svn-wc = { workspace = true }
-
 thiserror = { workspace = true }
+url = { workspace = true }
 uuid = { workspace = true }

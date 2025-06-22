@@ -3,5 +3,8 @@ pub mod blame;
 pub mod cat;
 pub mod cmdline;
 pub mod ctx;
+mod error;
 pub mod info;
 pub mod layout;
+pub mod status;
+pub use error::Error;

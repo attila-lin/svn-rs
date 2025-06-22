@@ -7,7 +7,9 @@ mod file;
 pub mod binary_diff;
 
 pub mod diff;
+pub mod diff_file;
 mod parse;
+pub use diff_file::DiffFileOptions;
 pub use parse::DiffPatchParser;
 
 pub mod tree;

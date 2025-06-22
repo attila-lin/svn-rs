@@ -1,29 +1,27 @@
 [package]
 name = "svn-subr"
 version.workspace = true
-edition.workspace = true
 authors.workspace = true
+edition.workspace = true
 
 [dependencies]
-svn-types = { workspace = true }
-
-md-5 = "0.10.6"
-hex = "0.4.3"
-
-uuid = { workspace = true }
-thiserror = { workspace = true }
-
 fs-err = { workspace = true }
-
+hex = "0.4.3"
 homedir = "0.3.4"
+humansize = "2.1.3"
+md-5 = "0.10.6"
+svn-types = { workspace = true }
+thiserror = { workspace = true }
+url = "2.5.4"
+uuid = { workspace = true }
 whoami = "1.6.0"
+
+[target.'cfg(unix)'.dependencies]
 
 [target.'cfg(windows)'.dependencies]
 windows = { version = "0.61", features = [
-    "Win32_Foundation",
-    "Win32_System_Console",
-    "Win32_Storage",
-    "Win32_Storage_FileSystem",
+  "Win32_Foundation",
+  "Win32_System_Console",
+  "Win32_Storage",
+  "Win32_Storage_FileSystem",
 ] }
-
-[target.'cfg(unix)'.dependencies]

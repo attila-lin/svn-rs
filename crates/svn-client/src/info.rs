@@ -4,9 +4,9 @@ use svn_types::{NodeKind, RevisionNumber};
 use svn_wc::info::WcInfo;
 use uuid::Uuid;
 
-/// `svn_client_info2_t`
 /// A structure which describes various system-generated metadata about
 /// a working-copy path or URL.
+/// `svn_client_info2_t`
 ///
 /// @note Fields may be added to the end of this structure in future
 /// versions.  Therefore, users shouldn't allocate structures of this

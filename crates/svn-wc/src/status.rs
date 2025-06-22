@@ -5,7 +5,7 @@ use uuid::Uuid;
 
 /// The type of status for the working copy.
 /// `svn_wc_status_kind`
-enum StatusKind {
+pub enum StatusKind {
     /// does not exist
     None = 1,
     /// is not a versioned thing in this wc

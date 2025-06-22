@@ -1,4 +1,5 @@
 use svn_types::RevisionNumber;
+use url::Url;
 
 /// A revision, specified in one of @c svn_opt_revision_kind ways.
 ///
@@ -25,6 +26,13 @@ pub enum OptRevisionKind {
     Base(RevisionNumber),
     Working(RevisionNumber),
     Head,
+}
+
+/// Error types for option parsing operations
+#[derive(Debug, thiserror::Error)]
+pub enum OptError {
+    #[error("Bad URL: {0}")]
+    BadUrl(String),
 }
 
 /* Extract the peg revision, if any, from UTF8_TARGET.
@@ -73,6 +81,63 @@ pub fn split_arg_at_peg_revision(utf8_target: &str) -> (&str, &str) {
         (true_target, peg_revision)
     } else {
         (utf8_target, "")
+    }
+}
+
+/// Canonicalize a URL argument.
+///
+/// This function performs the following operations:
+/// 1. Convert to URI
+/// 2. Auto-escape some ASCII characters
+/// 3. Convert local-style separators to canonical ones (on Windows)
+/// 4. Verify that no backpaths are present in the URL
+/// 5. Strip any trailing '/' and collapse other redundant elements
+///
+/// Translates `svn_opt__arg_canonicalize_url` from C.
+pub fn arg_canonicalize_url(url_in: &str) -> Result<String, OptError> {
+    // Handle Windows backslashes before parsing
+    #[cfg(windows)]
+    let mut target = url_in.replace('\\', "/");
+    #[cfg(not(windows))]
+    let target = url_in.to_string();
+
+    // Parse to validate it's a proper URL
+    let mut parsed_url =
+        Url::parse(&target).map_err(|_| OptError::BadUrl(format!("Invalid URL: '{}'", url_in)))?;
+
+    // Manually normalize the path to collapse multiple slashes
+    let path = parsed_url.path();
+    let normalized_path = normalize_path(path);
+
+    // Set the normalized path
+    parsed_url.set_path(&normalized_path);
+
+    // Verify that no backpaths are present in the original URL
+    // We check the original because URL parsing might resolve .. segments
+    if url_in.contains("..") && (url_in.contains("/../") || url_in.ends_with("/..")) {
+        return Err(OptError::BadUrl(format!(
+            "URL '{}' contains a '..' element",
+            url_in
+        )));
+    }
+
+    let mut result = parsed_url.to_string();
+
+    // Remove trailing slash unless it's the root path
+    if result.ends_with('/') && parsed_url.path() != "/" {
+        result = result.trim_end_matches('/').to_string();
+    }
+
+    Ok(result)
+}
+
+/// Normalize a URL path by collapsing multiple slashes
+fn normalize_path(path: &str) -> String {
+    let segments: Vec<&str> = path.split('/').filter(|s| !s.is_empty()).collect();
+    if path.starts_with('/') {
+        format!("/{}", segments.join("/"))
+    } else {
+        segments.join("/")
     }
 }
 
@@ -137,5 +202,55 @@ mod tests {
         let (true_target, peg_rev) = split_arg_at_peg_revision("@123");
         assert_eq!(true_target, "");
         assert_eq!(peg_rev, "@123");
+    }
+
+    #[test]
+    fn test_arg_canonicalize_url() {
+        // Test case 1: Simple HTTP URL
+        let result = arg_canonicalize_url("http://example.com/path").unwrap();
+        assert_eq!(result, "http://example.com/path");
+
+        // Test case 2: URL with trailing slash
+        let result = arg_canonicalize_url("http://example.com/path/").unwrap();
+        assert_eq!(result, "http://example.com/path");
+
+        // Test case 3: URL with multiple slashes
+        let result = arg_canonicalize_url("http://example.com//path//to//file").unwrap();
+        assert_eq!(result, "http://example.com/path/to/file");
+
+        // Test case 4: File URL
+        let result = arg_canonicalize_url("file:///home/user/repo").unwrap();
+        assert_eq!(result, "file:///home/user/repo");
+
+        // Test case 5: URL with backpath should fail
+        let result = arg_canonicalize_url("http://example.com/path/../other");
+        assert!(result.is_err());
+
+        // Test case 5b: URL ending with backpath should fail
+        let result = arg_canonicalize_url("http://example.com/path/..");
+        assert!(result.is_err());
+
+        // Test case 6: Invalid URL should fail
+        let result = arg_canonicalize_url("not-a-url");
+        assert!(result.is_err());
+
+        // Test case 7: HTTPS URL with port
+        let result = arg_canonicalize_url("https://example.com:8080/path").unwrap();
+        assert_eq!(result, "https://example.com:8080/path");
+
+        #[cfg(windows)]
+        {
+            // Test case 8: File URL with backslashes on Windows
+            let result = arg_canonicalize_url("file:///C:\\Users\\user\\repo").unwrap();
+            assert_eq!(result, "file:///C:/Users/user/repo");
+        }
+
+        // Test case 9: Root path should keep slash
+        let result = arg_canonicalize_url("http://example.com/").unwrap();
+        assert_eq!(result, "http://example.com/");
+
+        // Test case 10: Multiple consecutive slashes in middle of path
+        let result = arg_canonicalize_url("http://example.com/a///b/c").unwrap();
+        assert_eq!(result, "http://example.com/a/b/c");
     }
 }
