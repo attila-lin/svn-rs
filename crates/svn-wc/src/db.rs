@@ -8,6 +8,7 @@ use crate::Error;
 use crate::status::RevisionStatus;
 
 mod error;
+pub mod sql;
 pub use error::DBError;
 
 mod wcroot;
