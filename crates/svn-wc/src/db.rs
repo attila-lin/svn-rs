@@ -7,6 +7,9 @@ use svn_types::NodeKind;
 use crate::Error;
 use crate::status::RevisionStatus;
 
+mod error;
+pub use error::DBError;
+
 mod wcroot;
 
 use crate::root::WcRoot;
@@ -238,6 +241,173 @@ impl WcDb {
         }
 
         Ok(())
+    }
+
+    /* Retrieve information about a node.
+
+       For the node implied by LOCAL_ABSPATH from the local filesystem, return
+       information in the provided OUT parameters. Each OUT parameter may be
+       NULL, indicating that specific item is not requested.
+
+       The information returned comes from the BASE tree, as possibly modified
+       by the WORKING and ACTUAL trees.
+
+       If there is no information about the node, then SVN_ERR_WC_PATH_NOT_FOUND
+       will be returned.
+
+       The OUT parameters, and their "not available" values are:
+         STATUS                  n/a (always available)
+         KIND                    svn_node_unknown   (For ACTUAL only nodes)
+         REVISION                SVN_INVALID_REVNUM
+         REPOS_RELPATH           NULL
+         REPOS_ROOT_URL          NULL
+         REPOS_UUID              NULL
+         CHANGED_REV             SVN_INVALID_REVNUM
+         CHANGED_DATE            0
+         CHANGED_AUTHOR          NULL
+         DEPTH                   svn_depth_unknown
+         CHECKSUM                NULL
+         TARGET                  NULL
+
+         ORIGINAL_REPOS_RELPATH  NULL
+         ORIGINAL_ROOT_URL       NULL
+         ORIGINAL_UUID           NULL
+         ORIGINAL_REVISION       SVN_INVALID_REVNUM
+
+         LOCK                    NULL
+
+         RECORDED_SIZE           SVN_INVALID_FILESIZE
+         RECORDED_TIME       0
+
+         CHANGELIST              NULL
+         CONFLICTED              FALSE
+
+         OP_ROOT                 FALSE
+         HAD_PROPS               FALSE
+         PROPS_MOD               FALSE
+
+         HAVE_BASE               FALSE
+         HAVE_MORE_WORK          FALSE
+         HAVE_WORK               FALSE
+
+       When STATUS is requested, then it will be one of these values:
+
+         svn_wc__db_status_normal
+           A plain BASE node, with no local changes.
+
+         svn_wc__db_status_added
+           A node has been added/copied/moved to here. See HAVE_BASE to see
+           if this change overwrites a BASE node. Use scan_addition() to resolve
+           whether this has been added, copied, or moved, and the details of the
+           operation (this function only looks at LOCAL_ABSPATH, but resolving
+           the details requires scanning one or more ancestor nodes).
+
+         svn_wc__db_status_deleted
+           This node has been deleted or moved away. It may be a delete/move of
+           a BASE node, or a child node of a subtree that was copied/moved to
+           an ancestor location. Call scan_deletion() to determine the full
+           details of the operations upon this node.
+
+         svn_wc__db_status_server_excluded
+           The node is versioned/known by the server, but the server has
+           decided not to provide further information about the node. This
+           is a BASE node (since changes are not allowed to this node).
+
+         svn_wc__db_status_excluded
+           The node has been excluded from the working copy tree. This may
+           be an exclusion from the BASE tree, or an exclusion in the
+           WORKING tree for a child node of a copied/moved parent.
+
+         svn_wc__db_status_not_present
+           This is a node from the BASE tree, has been marked as "not-present"
+           within this mixed-revision working copy. This node is at a revision
+           that is not in the tree, contrary to its inclusion in the parent
+           node's revision.
+
+         svn_wc__db_status_incomplete
+           The BASE is incomplete due to an interrupted operation.  An
+           incomplete WORKING node will be svn_wc__db_status_added.
+
+       If REVISION is requested, it will be set to the revision of the
+       unmodified (BASE) node, or to SVN_INVALID_REVNUM if any structural
+       changes have been made to that node (that is, if the node has a row in
+       the WORKING table).
+
+       If DEPTH is requested, and the node is NOT a directory, then
+       the value will be set to svn_depth_unknown.
+
+       If CHECKSUM is requested, and the node is NOT a file, then it will
+       be set to NULL.
+
+       If TARGET is requested, and the node is NOT a symlink, then it will
+       be set to NULL.
+
+       If TRANSLATED_SIZE is requested, and the node is NOT a file, then
+       it will be set to SVN_INVALID_FILESIZE.
+
+       If HAVE_WORK is TRUE, the returned information is from the highest WORKING
+       layer. In that case HAVE_MORE_WORK and HAVE_BASE provide information about
+       what other layers exist for this node.
+
+       If HAVE_WORK is FALSE and HAVE_BASE is TRUE then the information is from
+       the BASE tree.
+
+       If HAVE_WORK and HAVE_BASE are both FALSE and when retrieving CONFLICTED,
+       then the node doesn't exist at all.
+
+       If OP_ROOT is requested and the node has a WORKING layer, OP_ROOT will be
+       set to true if this node is the op_root for this layer.
+
+       If HAD_PROPS is requested and the node has pristine props, the value will
+       be set to TRUE.
+
+       If PROPS_MOD is requested and the node has property modification the value
+       will be set to TRUE.
+
+       ### add information about the need to scan upwards to get a complete
+       ### picture of the state of this node.
+
+       ### add some documentation about OUT parameter values based on STATUS ??
+
+       ### the TEXT_MOD may become an enumerated value at some point to
+       ### indicate different states of knowledge about text modifications.
+       ### for example, an "svn edit" command in the future might set a
+       ### flag indicating administratively-defined modification. and/or we
+       ### might have a status indicating that we saw it was modified while
+       ### performing a filesystem traversal.
+
+       All returned data will be allocated in RESULT_POOL. All temporary
+       allocations will be made in SCRATCH_POOL.
+    */
+    /* ### old docco. needs to be incorporated as appropriate. there is
+       ### some pending, potential changes to the definition of this API,
+       ### so not worrying about it just yet.
+
+       ### if the node has not been committed (after adding):
+       ###   revision will be SVN_INVALID_REVNUM
+       ###   repos_* will be NULL
+       ###   changed_rev will be SVN_INVALID_REVNUM
+       ###   changed_date will be 0
+       ###   changed_author will be NULL
+       ###   status will be svn_wc__db_status_added
+       ###   text_mod will be TRUE
+       ###   prop_mod will be TRUE if any props have been set
+       ###   base_shadowed will be FALSE
+
+       ### if the node is not a copy, or a move destination:
+       ###   original_repos_path will be NULL
+       ###   original_root_url will be NULL
+       ###   original_uuid will be NULL
+       ###   original_revision will be SVN_INVALID_REVNUM
+
+       ### note that @a base_shadowed can be derived. if the status specifies
+       ### an add/copy/move *and* there is a corresponding node in BASE, then
+       ### the BASE has been deleted to open the way for this node.
+    */
+    /// `svn_wc__db_read_info`
+    pub fn read_info<P: AsRef<Path>>(&self, local_abspath: P) -> Result<(), Error> {
+        let p = local_abspath.as_ref();
+        todo!()
     }
 }
 
