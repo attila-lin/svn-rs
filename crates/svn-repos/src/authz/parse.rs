@@ -4,9 +4,9 @@
 
 use std::collections::HashMap;
 
-use crate::authz::AuthzFull;
-
 use super::AuthzAcl;
+use crate::authz::AuthzAce;
+use crate::authz::AuthzFull;
 
 /// Temporary ACL constructed by the parser.
 ///
@@ -20,11 +20,11 @@ pub struct ParsedAcl {
     /// The set of access control entries. In the second pass, aliases in
     /// these entries will be expanded and equivalent entries will be
     /// merged. The entries are allocated from the parser pool.
-    aces: HashMap<String, AccessType>,
+    aces: HashMap<String, AuthzAce>,
     /// The set of access control entries that use aliases. In the second
     /// pass, aliases in these entries will be expanded and merged into ACES.
     /// The entries are allocated from the parser pool.
-    alias_aces: HashMap<String, AccessType>,
+    alias_aces: HashMap<String, AuthzAce>,
 }
 
 /// Temporary group definition constructed by the authz/group parser.
@@ -74,22 +74,12 @@ impl AuthzParser {
     where
         P: AsRef<std::path::Path>,
     {
-        let input = fs_err::fs::read_to_string(file)?;
+        let input = fs_err::read_to_string(file)?;
         Self::parse(&input)
     }
 
     pub fn parse(input: &str) -> Result<AuthzFull, ParseError> {
         let mut authz_full = AuthzFull::default();
         Ok(authz_full)
-    }
-
-    fn _parse<'a>() -> Parser<'a, &'a str, Self, extra::Err<Rich<'a, char>>> {
-        recursive(|value| {
-            // let
-            todo!()
-            // choice((
-            //     just()
-            // ))
-        })
     }
 }

@@ -10,7 +10,7 @@ pub struct RangeIndexNode {
     offset: usize,
     limit: usize,
 
-    target_oofset: usize,
+    target_offset: usize,
 
     left: Option<Box<RangeIndexNode>>,
     right: Option<Box<RangeIndexNode>>,
@@ -21,6 +21,7 @@ pub struct RangeIndexNode {
 
 /// A node in a list of ranges for source and target op copies.
 /// `range_index_t`
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum RangeKind {
     Source,
     Target,
@@ -28,6 +29,7 @@ pub enum RangeKind {
 
 /// Mapping offsets in the target stream to txdelta ops.
 /// `offset_index_t`
+#[derive(Debug)]
 pub struct OffsetIndex {
     length: i32,
     offs: Vec<i32>,

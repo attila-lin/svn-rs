@@ -1,8 +1,9 @@
-use svn_delta::SvnDeltaEditor;
+use svn_delta::editor::DeltaEditor;
+use svn_types::RevisionNumber;
 
 /// Edit baton
 pub struct EditBaton {
-    wrapped_editor: SvnDeltaEditor,
+    wrapped_editor: Box<dyn DeltaEditor>,
     to_url: String,
     source_prop_encoding: String,
 

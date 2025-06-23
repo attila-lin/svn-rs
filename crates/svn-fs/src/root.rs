@@ -12,7 +12,7 @@ use crate::fs::SvnFs;
 /// The Filesystem Root object.
 ///
 /// `svn_fs_root_t`
-struct FsRoot {
+pub struct FsRoot {
     /// The filesystem to which this root belongs
     fs: Box<SvnFs>,
 

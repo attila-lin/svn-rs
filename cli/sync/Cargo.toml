@@ -1,10 +1,13 @@
 [package]
-name = "svnsync"
-version.workspace = true
 authors.workspace = true
 edition.workspace = true
+name = "svnsync"
+version.workspace = true
 
 [dependencies]
+svn-types = { workspace = true }
+
+
 anyhow = { workspace = true }
 clap = { workspace = true }
 svn-delta = { workspace = true }

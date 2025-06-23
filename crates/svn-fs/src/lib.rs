@@ -1,4 +1,5 @@
 mod config;
+pub mod txn;
 pub use config::FsConfig;
 pub use config::FsFsConfig;
 pub use config::FsType;
@@ -11,7 +12,9 @@ pub use fs::SvnFs;
 
 pub mod backend;
 mod node;
+
 mod root;
+pub use root::FsRoot;
 
 pub use node::NodeRevision;
 

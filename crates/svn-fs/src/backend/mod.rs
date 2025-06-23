@@ -117,20 +117,26 @@ pub const CONFIG_OPTION_PACK_AFTER_COMMIT: &str = "pack-after-commit";
 pub const CONFIG_OPTION_VERIFY_BEFORE_COMMIT: &str = "verify-before-commit";
 pub const CONFIG_OPTION_COMPRESSION: &str = "compression";
 
-use std::path::Path;
+use std::{any::Any, path::Path};
 
 use svn_types::RevisionNumber;
 
 use crate::SvnFs;
 
+pub trait FsDataTrait {}
+
 /// vtable types for the abstract FS objects
 ///
 /// `fs_vtable_t`
 pub trait FsInstance: FsLibrary {
+    // type Data: Send + Sync + FsDataTrait;
+
     fn youngest_rev(&self) -> RevisionNumber;
     fn refresh_revision_prop(&self) -> Result<(), BackendError>;
 
     fn revision_prop(&self) -> Result<(), BackendError>;
+
+    fn data_mut(&mut self) -> &mut Box<dyn Any>;
 }
 
 /// Top-level library vtable type

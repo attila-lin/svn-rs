@@ -50,6 +50,14 @@ impl SvnFs {
     pub fn inner_mut(&mut self) -> &mut Box<dyn FsInstance> {
         self.inner.as_mut().expect("SvnFs inner is not set")
     }
+
+    pub fn path(&self) -> &Path {
+        &self.common.path
+    }
+
+    pub fn config(&self) -> &HashMap<String, String> {
+        &self.common.config
+    }
 }
 
 impl SvnFs {
@@ -112,13 +120,20 @@ impl SvnFs {
         fs_err::write(fs_type_file, format!("{}\n", fs_type.to_string()))?;
 
         // let ret = Self {
-        //     path:
-        // }
+        //     inner: Some(new_fs),
+        //     common: SvnFsCommon {
+        //         path: db_path.to_path_buf(),
+        //         config: config.clone(),
+        //         access_ctx: FsAccess::default(),
+        //     },
+        //     uuid: Uuid::new_v4(), // Generate a new UUID for the filesystem
+        // };
 
         // Perform the actual creation
-        new_fs.create(db_path)?;
-        // new_fs.open(db_path, config)?;
-        Ok(ret)
+        // let mut ret = new_fs.create(db_path)?;
+        // new_fs.open(db_path, config, &mut ret)?;
+        // Ok(ret)
+        todo!()
     }
 
     /// Open a Subversion filesystem located in the directory @a path, and

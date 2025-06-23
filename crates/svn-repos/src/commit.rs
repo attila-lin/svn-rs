@@ -1,6 +1,7 @@
 use std::collections::HashMap;
 
 use svn_fs::SvnFs;
+use svn_fs::txn::FsTxn;
 use svn_types::RevisionNumber;
 
 use crate::Repos;
@@ -10,7 +11,7 @@ pub struct EditBaton {
     revprop_table: HashMap<String, String>,
 
     // The already-open svn repository to commit to.
-    repos: &Repos,
+    repos: Repos,
     // URL to the root of the open repository.
     repos_url_decoded: String,
 
@@ -18,7 +19,7 @@ pub struct EditBaton {
     repos_name: String,
     // The filesystem associated with the REPOS above (here for
     // convenience).
-    fs: &SvnFs,
+    fs: SvnFs,
     // Location in fs where the edit will begin.
     base_path: String,
 

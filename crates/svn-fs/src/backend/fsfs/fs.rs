@@ -8,7 +8,6 @@ use svn_subr::SvnConfig;
 use svn_types::RevisionNumber;
 
 use super::super::BackendError;
-use super::super::FsInstance;
 use super::super::FsLibrary;
 use super::FORMAT_NUMBER;
 use super::FsFsData;
@@ -17,7 +16,6 @@ use crate::FsFsConfig;
 use crate::SvnFs;
 use crate::backend::PATH_FORMAT;
 use crate::backend::PATH_MIN_UNPACKED_REV;
-use crate::backend::PATH_REV;
 use crate::backend::PATH_REVS_DIR;
 use crate::backend::PATH_UUID;
 use crate::backend::fsfs::FsFsBackend;
@@ -53,8 +51,8 @@ impl FsLibrary for FsFsBackend {
 
         Self::initialize_fs_struct();
 
-        self._open(path)?;
-        self._initialize_cache()?;
+        // self._open(path)?;
+        // self._initialize_cache()?;
 
         todo!()
     }
@@ -92,15 +90,15 @@ impl FsFsBackend {
         // We don't care version, just use 8
         let format = FORMAT_NUMBER;
 
-        let shard_size = if let Some(share_size_str) = fs.config.get(SVN_FS_CONFIG_FSFS_SHARD_SIZE)
-        {
-            share_size_str.parse::<u32>().unwrap_or(0)
-        } else {
-            0
-        };
+        let shard_size =
+            if let Some(share_size_str) = fs.config().get(SVN_FS_CONFIG_FSFS_SHARD_SIZE) {
+                share_size_str.parse::<u32>().unwrap_or(0)
+            } else {
+                0
+            };
 
         let log_addressing: bool = fs
-            .config
+            .config()
             .get(SVN_FS_CONFIG_FSFS_LOG_ADDRESSING)
             .map_or(false, |v| v == "true");
 
@@ -109,7 +107,9 @@ impl FsFsBackend {
         f.create_file_tree(path, format, shard_size, log_addressing)?;
 
         // This filesystem is ready.  Stamp it with a format number.
-        s.write_format()
+        // s.write_format()
+        //
+        todo!()
     }
 
     /// Under the repository db PATH, create a FSFS repository with FORMAT,
@@ -426,14 +426,14 @@ impl FsFsBackend {
     ///
     /// `svn_fs_fs__initialize_caches`
     fn _initialize_caches(fs: &mut SvnFs) -> Result<(), BackendError> {
-        let ffd = fs.inner_mut()._data_mut();
+        let ffd = fs.inner_mut().data_mut().downcast_mut::<FsFsData>();
 
-        let prefix = format!("fsfs:{}/{}:", fs.uuid, fs.path);
+        let prefix = format!("fsfs:{}/{}:", fs.uuid, fs.path().display());
 
-        let no_handler = ffd.fail_stop;
+        // let no_handler = ffd.fail_stop;
 
         let (cache_namespace, cache_txdeltas, cache_fulltexts, cache_nodeprops) =
-            super::caching::read_config(self)?;
+            super::caching::read_config(&fs)?;
 
         let prefix = format!("ns:{}:{}", cache_namespace, prefix);
         let has_namespace = !cache_namespace.is_empty();

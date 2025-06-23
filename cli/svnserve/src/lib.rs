@@ -50,6 +50,7 @@ pub enum AuthnType {
 }
 
 /// `access_type`
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum AccessType {
     No,
     Read,

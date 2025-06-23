@@ -1,4 +1,3 @@
-pub mod conflict;
 mod db;
 pub use db::DbStatus;
 pub use db::WcDb;
@@ -21,3 +20,5 @@ pub use error::Error;
 
 pub mod notify;
 pub use notify::Notify;
+
+pub mod conflict;

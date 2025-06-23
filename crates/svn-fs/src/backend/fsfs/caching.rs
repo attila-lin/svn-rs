@@ -43,12 +43,14 @@ pub enum CachingError {
     ParseBool(#[from] std::str::ParseBoolError),
 }
 
-/// CACHE_TXDELTAS,///CACHE_FULLTEXTS,///CACHE_NODEPROPS flags will be set
-/// according to FS->CONFIG.///CACHE_NAMESPACE receives the cache prefix to
+/// *CACHE_TXDELTAS, *CACHE_FULLTEXTS, *CACHE_NODEPROPS flags will be set
+/// according to FS->CONFIG. *CACHE_NAMESPACE receives the cache prefix to
 /// use.
 ///
 /// Use FS->pool for allocating the memcache and CACHE_NAMESPACE, and POOL
 /// for temporary allocations.
+///
+/// `read_config`
 pub fn read_config(fs: &SvnFs) -> Result<(String, bool, bool, bool), CachingError> {
     //  No cache namespace by default.  I.e. all FS instances share the
     // cached data.  If you specify different namespaces, the data will
@@ -59,7 +61,7 @@ pub fn read_config(fs: &SvnFs) -> Result<(String, bool, bool, bool), CachingErro
     // Since the namespace will be concatenated with other elements to form
     // the complete key prefix, we must make sure that the resulting string
     let cache_namespace = fs
-        .config
+        .config()
         .get(SVN_FS_CONFIG_FSFS_CACHE_NS)
         .cloned()
         .unwrap_or_default();
@@ -67,7 +69,7 @@ pub fn read_config(fs: &SvnFs) -> Result<(String, bool, bool, bool), CachingErro
     // Cache text deltas by default.
     // They tend to be smaller and have finer granularity than fulltexts.
     let cache_txdeltas =
-        svn_subr::hash::get_bool(&fs.config, SVN_FS_CONFIG_FSFS_CACHE_DELTAS, true);
+        svn_subr::hash::get_bool(fs.config(), SVN_FS_CONFIG_FSFS_CACHE_DELTAS, true);
 
     // by default, cache fulltexts.
     // Most SVN tools care about reconstructed file content.
@@ -76,13 +78,13 @@ pub fn read_config(fs: &SvnFs) -> Result<(String, bool, bool, bool), CachingErro
     // won't be re-used rendering the cache less effective
     // by squeezing wanted data out.
     let cache_fulltexts =
-        svn_subr::hash::get_bool(&fs.config, SVN_FS_CONFIG_FSFS_CACHE_FULLTEXTS, true);
+        svn_subr::hash::get_bool(fs.config(), SVN_FS_CONFIG_FSFS_CACHE_FULLTEXTS, true);
 
     //  by default, cache nodeprops.
     // Pre-1.10, this was controlled by the SVN_FS_CONFIG_FSFS_CACHE_FULLTEXTS
     // configuration option which defaulted to TRUE.
     let cache_nodeprops =
-        svn_subr::hash::get_bool(&fs.config, SVN_FS_CONFIG_FSFS_CACHE_NODEPROPS, true);
+        svn_subr::hash::get_bool(&fs.config(), SVN_FS_CONFIG_FSFS_CACHE_NODEPROPS, true);
 
     Ok((
         cache_namespace,

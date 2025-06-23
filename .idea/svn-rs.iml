@@ -23,6 +23,11 @@
       <sourceFolder url="file://$MODULE_DIR$/crates/svn-types/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/crates/svn-wc/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cli/bench/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cli/sync/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/crates/svn-client/tests" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/crates/svn-fs/tests" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/crates/svn-repos/tests" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
     <orderEntry type="inheritedJdk" />

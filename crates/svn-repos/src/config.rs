@@ -2,7 +2,9 @@
 
 use std::path::{Path, PathBuf};
 
-use svn_repos::SvnRepos;
+use svn_fs::FsRoot;
+
+use crate::Repos;
 
 #[allow(missing_docs)]
 #[derive(Debug, thiserror::Error)]
@@ -11,13 +13,13 @@ pub enum ConfigError {}
 /// `config_access_t`
 pub struct ConfigAccess {
     /// The last repository that we found the requested URL in.  May be NULL.
-    repos: Option<SvnRepos>,
+    repos: Option<Repos>,
 }
 
-/* A stream object that gives access to a representation's content but
- * delays accessing the repository data until the stream is first used.
- * IOW, the stream object is cheap as long as it is not accessed.
- */
+/// A stream object that gives access to a representation's content but
+/// delays accessing the repository data until the stream is first used.
+/// IOW, the stream object is cheap as long as it is not accessed.
+///
 /// `repr_steam_baton_t`
 struct ReprStreamBaton {
     root: FsRoot,

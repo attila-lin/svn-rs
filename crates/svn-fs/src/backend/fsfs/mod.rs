@@ -15,7 +15,7 @@ use std::path::PathBuf;
 #[derive(Debug)]
 pub struct FsFsBackend {
     path: PathBuf,
-    data: Option<FsFsData>,
+    data: Option<Box<FsFsData>>,
 }
 
 impl FsFsBackend {
@@ -27,7 +27,7 @@ impl FsFsBackend {
         &self.path
     }
 
-    pub fn data(&self) -> Option<&FsFsData> {
+    pub fn data(&self) -> Option<&Box<FsFsData>> {
         self.data.as_ref()
     }
 
@@ -40,7 +40,7 @@ impl FsFsBackend {
     }
 
     pub fn set_data(&mut self, data: FsFsData) {
-        self.data = Some(data);
+        self.data = Some(Box::new(data));
     }
 }
 

@@ -47,7 +47,7 @@ bitflags! {
 /// tree applies to a single user only.
 ///
 /// `node_t`
-#[derive(Debug)]
+#[derive(Debug, Default)]
 pub struct Node {
     /// The segment as specified in the path rule.  During the lookup tree walk,
     /// this will compared to the respective segment of the path to check.
@@ -58,13 +58,66 @@ pub struct Node {
     /// Map of sub-segment(const char *) to respective node (node_t) for all
     /// sub-segments that have rules on themselves or their respective subtrees.
     /// NULL, if there are no rules for sub-paths relevant to the user.
-    sub_nodes: Option<HashMap<String, Node>>,
+    sub_nodes: Option<HashMap<String, Box<Node>>>,
 
     /// If not NULL, this contains the pattern-based segment sub-nodes.
     pattern_sub_nodes: Option<Box<NodePattern>>,
 }
 
-impl Node {}
+impl Node {
+    /// Create a new tree node for SEGMENT.
+    /// Note: SEGMENT->pattern is always interned and therefore does not
+    /// have to be copied into the result pool.
+    ///
+    /// `create_node`
+    fn create_node(segment: &AuthzRuleSegment) -> Self {
+        Self {
+            segment: segment.pattern.clone(),
+            rights: LimitedRights::default(),
+            sub_nodes: None,
+            pattern_sub_nodes: None,
+        }
+    }
+
+    /// Make sure a Node for segment exists in array and return it.
+    /// Auto-create either if they don't exist. Entries in array are
+    /// sorted by their segment strings.
+    fn ensure_node_in_array<'a>(
+        array: &mut Option<Vec<SortedPattern>>,
+        segment: &'a AuthzRuleSegment,
+    ) -> &'a mut Node {
+        // Auto-create the array if it doesn't exist
+        if array.is_none() {
+            *array = Some(Vec::with_capacity(4));
+        }
+
+        // Find the node in the array and the index at which it should be inserted
+        let array = array.as_mut().unwrap();
+
+        // Try to find an existing node with this segment
+        let idx = match array
+            .binary_search_by(|element| element.node.segment.as_str().cmp(segment.pattern.as_str()))
+        {
+            Ok(index) => {
+                // Found existing node - return it
+                return &mut array[index].node;
+            }
+            Err(index) => index, // This is where we would insert the new node
+        };
+
+        // There is no such node yet.
+        // Create one and insert it into the sorted array.
+        let mut entry = SortedPattern {
+            node: Arc::new(Self::create_node(segment)),
+        };
+
+        // Insert at the calculated position to maintain sorted order
+        array.push(entry);
+
+        // Return a reference to the newly created node
+        &mut array[idx].node
+    }
+}
 
 /// Since prefix arrays may have more than one hit, we need to link them
 /// for fast lookup.
@@ -73,9 +126,7 @@ impl Node {}
 #[derive(Debug)]
 pub struct SortedPattern {
     /// The filtered tree node carrying the prefix.
-    node: Arc<Node>,
-    /// Entry that is a prefix to this one or NULL
-    next: Option<Box<SortedPattern>>,
+    node: Box<Node>,
 }
 
 /// Substructure of node_t.  It contains all sub-node that use patterns
@@ -134,6 +185,27 @@ pub struct LimitedRights {
     /// Maximal access rights that the user has on this or any other node in
     /// the sub-tree.  This does not take inherited rights into account.
     pub max_rights: AuthzAccess,
+}
+
+const NO_SEQUENCE_NUMBER: i32 = -1;
+
+impl Default for LimitedRights {
+    /// Initialize a limited rights structure.
+    /// The minimum rights start with all available access and are later
+    /// bitwise-and'ed with actual access rights. The maximum rights begin
+    /// empty and are later bitwise-and'ed with actual rights.
+    ///
+    /// `init_limited_rights`
+    fn default() -> Self {
+        Self {
+            access: PathAccess {
+                sequence_number: NO_SEQUENCE_NUMBER,
+                rights: AuthzAccess::NONE,
+            },
+            min_rights: AuthzAccess::WRITE,
+            max_rights: AuthzAccess::NONE,
+        }
+    }
 }
 
 impl LimitedRights {
@@ -404,6 +476,7 @@ pub enum AuthzRuleSegmentKind {
 /// Rule path segment descriptor.
 ///
 /// `authz_rule_segment_t`
+#[derive(Debug)]
 pub struct AuthzRuleSegment {
     pub kind: AuthzRuleSegmentKind,
     pub pattern: String,
@@ -412,6 +485,7 @@ pub struct AuthzRuleSegment {
 /// Rule path descriptor.
 ///
 /// `authz_rule_t`
+#[derive(Debug)]
 pub struct AuthzRule {
     /// The repository that this rule applies to. This will be the empty
     /// string if the rule did not name a repository. The
@@ -429,6 +503,7 @@ pub struct AuthzRule {
 /// An access control list defined by access rules.
 ///
 /// `authz_acl_t`
+#[derive(Debug)]
 pub struct AuthzAcl {
     /// The sequence number of the ACL stores the order in which access
     /// rules were defined in the authz file. The authz lookup code
@@ -455,6 +530,7 @@ pub struct AuthzAcl {
 /// An access control entry in authz_acl_t::user_access.
 ///
 /// `authz_ace_t`
+#[derive(Debug)]
 pub struct AuthzAce {
     /// The name of the alias, user or group that this ACE applies to.
     pub name: String,
@@ -472,6 +548,7 @@ pub struct AuthzAce {
 /// Immutable authorization info
 ///
 /// `authz_full_t`
+#[derive(Debug, Default)]
 pub struct AuthzFull {
     /// All ACLs from the authz file, in the order of definition.
     acls: Vec<AuthzAcl>,
@@ -515,7 +592,7 @@ impl AuthzFull {
     pub fn get_global_rights(
         &self,
         user: Option<&str>,
-        repository: &str,
+        repos: &str,
         rights: &mut AuthzRights,
     ) -> bool {
         const AUTHZ_ANONYMOUS_USER: &str = "";
@@ -524,7 +601,7 @@ impl AuthzFull {
             None | Some(AUTHZ_ANONYMOUS_USER) => {
                 // Check if we have explicit rights for anonymous access.
                 if let Some(anon_rights) = &self.anon_rights {
-                    return anon_rights.resolve_global_rights(repos, rights);
+                    return anon_rights.resolve_global_rights(rights, repos);
                 } else {
                     // No explicit rights for anonymous users, return the
                     // default no-access rights.
@@ -541,31 +618,32 @@ impl AuthzFull {
 
                 match user_rights {
                     Some(the_rights) => {
-                        access = the_rights.resolve_global_rights(repos, rights);
+                        access = the_rights.resolve_global_rights(rights, repos);
                     }
                     None => {
                         if let Some(neg_rights) = &self.neg_rights {
                             // check if inverted-rule rights apply
-                            access = neg_rights.resolve_global_rights(repos, rights);
+                            access = neg_rights.resolve_global_rights(rights, repos);
                             combine_user_rights = true;
                         }
                     }
                 }
 
-                /* Rights given to _any_ authenticated user may apply, too. */
-                if let Some(authn_rights) = &authz.anthn_rights {
+                // Rights given to _any_ authenticated user may apply, too.
+                if let Some(authn_rights) = &self.anthn_rights {
                     let mut authn = AuthzRights::default();
-                    let _access = authn_rights.resolve_global_rights(repos, &mut authn);
+                    let _access = authn_rights.resolve_global_rights(&mut authn, repos);
                     access |= _access;
                     if combine_user_rights {
-                        *rights = AuthzRights::combine(&rights, &user_rights);
+                        *rights = AuthzRights::combine(&rights, &authn);
                     } else {
                         *rights = authn;
                     }
                 }
+
+                access
             }
         }
-        eles {}
     }
 }
 

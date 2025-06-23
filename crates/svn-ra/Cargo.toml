@@ -5,6 +5,10 @@ name = "svn-ra"
 version.workspace = true
 
 [dependencies]
+svn-delta = { workspace = true }
+svn-types = { workspace = true }
+
+
 strum = { workspace = true }
 svn-subr.workspace = true
 

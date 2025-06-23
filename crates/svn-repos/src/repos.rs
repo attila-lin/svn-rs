@@ -8,6 +8,7 @@ use fs_err::File;
 use svn_fs::FsConfig;
 use svn_fs::FsFsConfig;
 use svn_fs::FsType;
+use svn_fs::SvnFs;
 use svn_fs::backend::PATH_FORMAT;
 use svn_ra::RaCapability;
 use svn_types::NodeKind;
@@ -53,7 +54,7 @@ const CONF_DIR: &str = "conf";
 #[derive(Default)]
 pub struct Repos {
     /// A Subversion filesystem object.
-    fs: Option<Rc<dyn svn_fs::FsTrait>>,
+    fs: Option<SvnFs>,
     /// The path to the repository's top-level directory.
     path: PathBuf,
     /// The path to the repository's conf directory.
@@ -217,17 +218,17 @@ impl Repos {
         #[allow(deprecated)]
         self.lock(false, false)?;
 
-        // Create an environment for the filesystem.
-        if let Err(e) = svn_fs::SvnFs::create(&mut self.fs, &self.db_path, fs_config) {
-            // If there was an error making the filesystem, e.g. unknown/supported
-            // filesystem type.  Clean up after ourselves.  Yes this is safe because
-            // create_repos_structure will fail if the path existed before we started
-            // so we can't accidentally remove a directory that previously existed.
-            if self.path.exists() {
-                fs_err::remove_dir_all(&self.path)?;
-            }
-            return Err(e);
-        }
+        // // Create an environment for the filesystem.
+        // if let Err(e) = SvnFs::create(&mut self.fs, &self.db_path, fs_config) {
+        //     // If there was an error making the filesystem, e.g. unknown/supported
+        //     // filesystem type.  Clean up after ourselves.  Yes this is safe because
+        //     // create_repos_structure will fail if the path existed before we started
+        //     // so we can't accidentally remove a directory that previously existed.
+        //     if self.path.exists() {
+        //         fs_err::remove_dir_all(&self.path)?;
+        //     }
+        //     return Err(e);
+        // }
 
         todo!()
     }
@@ -255,14 +256,14 @@ impl Repos {
         {
             let readme_header = r#"
             This is a Subversion repository; use the 'svnadmin' and 'svnlook'
-            tools to examine it.  Do not add, delete, or modify files here 
+            tools to examine it.  Do not add, delete, or modify files here
             unless you know how to avoid corrupting the repository.
             "#;
             let readme_bdb_insert = format!(
                 r#"
             The directory {DB_DIR} contains a Berkeley DB environment.
             you may need to tweak the values in {DB_DIR}/DB_CONFIG" to match the
-            requirements of your site. 
+            requirements of your site.
             "#
             );
             let readme_footer = "Visit https://subversion.apache.org/ for more information.";

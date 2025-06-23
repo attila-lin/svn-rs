@@ -1385,7 +1385,9 @@ version = "0.0.0"
 dependencies = [
  "bytes",
  "strum",
+ "svn-delta",
  "svn-subr",
+ "svn-types",
  "thiserror 2.0.12",
 ]
 
@@ -1515,6 +1517,7 @@ dependencies = [
  "svn-delta",
  "svn-ra",
  "svn-subr",
+ "svn-types",
 ]
 
 [[package]]

@@ -1,6 +1,7 @@
 //! hooks.c : running repository hooks
 
-use std::cmd::Command;
+use std::collections::HashMap;
+use std::process::Command;
 
 /// From `run_hook_cmd`
 pub struct Hook {
@@ -9,6 +10,10 @@ pub struct Hook {
     args: Vec<String>,
     hooks_env: HashMap<String, String>,
 }
+
+#[allow(missing_docs)]
+#[derive(Debug, thiserror::Error)]
+pub enum HookError {}
 
 impl Hook {
     /// Helper function for run_hook_cmd().  Wait for a hook to finish

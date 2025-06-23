@@ -28,7 +28,7 @@ impl ConstructionContext {
              * ones.  Whichever gets defined last wins.
              */
             let rights = LimitedRights {
-                access,
+                access: path_access,
                 max_rights: path_access.rights,
                 min_rights: path_access.rights,
             };
@@ -44,10 +44,13 @@ impl ConstructionContext {
         match segment.kind {
             AuthzRuleSegmentKind::AnySegment => {}
             AuthzRuleSegmentKind::Literal => {}
-            AuthzRuleSegmentKind::Wildcard => {
+            AuthzRuleSegmentKind::AnyRecursive => {
                 // Insert a wildcard segment
                 let sub_node = node.ensure_wildcard_sub_node();
                 sub_node.insert_path(node, path_access, segment_count - 1, segment);
+            }
+            _ => {
+                todo!()
             }
         }
     }

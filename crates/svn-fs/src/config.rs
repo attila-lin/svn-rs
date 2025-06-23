@@ -109,7 +109,7 @@ impl FsFsConfig {
     /// `write_config`
     pub fn write_config(fs: &SvnFs) -> Result<(), Error> {
         let content = include_str!("../config/fsfs.conf");
-        let path = fs.path.join(Self::PATH_CONFIG);
+        let path = fs.path().join(Self::PATH_CONFIG);
 
         std::fs::write(&path, content)?;
 
