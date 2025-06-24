@@ -158,3 +158,30 @@ pub fn write_atomic(
 
     Ok(())
 }
+
+/// Same as svn_io_dir_make(), but sets the hidden attribute on the
+///     directory on systems that support it.
+/// `svn_io_dir_make_hidden`
+pub fn dir_make_hidden(path: &Path) -> Result<(), std::io::Error> {
+    let metadata = fs_err::metadata(path);
+    if let Err(e) = metadata {
+        if e.kind() == std::io::ErrorKind::NotFound {
+            fs_err::create_dir(path)?;
+        } else {
+            return Err(e);
+        }
+    }
+
+    // Hide the directory on Windows
+    #[cfg(windows)]
+    {
+        use std::os::windows::fs::MetadataExt;
+        let attrs = fs_err::metadata(path)?.file_attributes();
+        // fs_err::set_file_attributes(path, attrs | FILE_ATTRIBUTE_HIDDEN)?;
+    }
+    #[cfg(not(windows))]
+    {
+        todo!("Hiding directories on non-Windows systems is not implemented");
+    }
+    Ok(())
+}

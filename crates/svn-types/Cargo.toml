@@ -1,12 +1,11 @@
 [package]
+authors.workspace = true
+edition.workspace = true
 name = "svn-types"
 version.workspace = true
-edition.workspace = true
-authors.workspace = true
 
 [dependencies]
 strum.workspace = true
 thiserror.workspace = true
-
 
 mime = "0.3.17"

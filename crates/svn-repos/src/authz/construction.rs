@@ -21,12 +21,12 @@ impl ConstructionContext {
         segment_count: i32,
         segment: AuthzRuleSegment,
     ) {
+        let mut node = node;
         // end of path
         if segment_count == 0 {
-            /* Set access rights.  Note that there might be multiple rules for
-             * the same path due to non-repo-specific rules vs. repo-specific
-             * ones.  Whichever gets defined last wins.
-             */
+            // Set access rights.  Note that there might be multiple rules for
+            // the same path due to non-repo-specific rules vs. repo-specific
+            // ones.  Whichever gets defined last wins.
             let rights = LimitedRights {
                 access: path_access,
                 max_rights: path_access.rights,
@@ -38,7 +38,7 @@ impl ConstructionContext {
 
         // Any wildcards in the path? They will go into a separate sub-structure.
         if segment.kind == AuthzRuleSegmentKind::Literal {
-            node.ensure_pattern_sub_nodes();
+            // node.ensure_pattern_sub_nodes();
         }
 
         match segment.kind {
@@ -46,8 +46,8 @@ impl ConstructionContext {
             AuthzRuleSegmentKind::Literal => {}
             AuthzRuleSegmentKind::AnyRecursive => {
                 // Insert a wildcard segment
-                let sub_node = node.ensure_wildcard_sub_node();
-                sub_node.insert_path(node, path_access, segment_count - 1, segment);
+                // let sub_node = node.ensure_wildcard_sub_node();
+                // sub_node.insert_path(node, path_access, segment_count - 1, segment);
             }
             _ => {
                 todo!()

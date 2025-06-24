@@ -5,7 +5,8 @@ use crate::NodeKind;
 /// @note To allow for extending the #svn_dirent_t structure in future
 /// releases, always use svn_dirent_create() to allocate the structure.
 ///
-/// @from svn_types.h svn_dirent_t
+/// @from svn_types.h `svn_dirent_t`
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct DirectoryEntry {
     /// node kind
     kind: NodeKind,
@@ -21,4 +22,18 @@ pub struct DirectoryEntry {
     time: i64,
     /// author of created_rev
     last_author: String,
+}
+
+impl Default for DirectoryEntry {
+    // `svn_dirent_create`
+    fn default() -> Self {
+        DirectoryEntry {
+            kind: NodeKind::Unknown,
+            size: -1,
+            has_props: false,
+            created_rev: -1,
+            time: 0,
+            last_author: String::new(),
+        }
+    }
 }

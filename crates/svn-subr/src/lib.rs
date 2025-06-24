@@ -1,6 +1,8 @@
 mod checksum;
 pub mod opt;
 pub mod path;
+mod tristate;
+pub use tristate::Tristate;
 
 pub use checksum::Checksum;
 pub use checksum::ChecksumKind;

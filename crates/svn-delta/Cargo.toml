@@ -7,3 +7,6 @@ edition.workspace = true
 [dependencies]
 svn-types = { workspace = true }
 thiserror = { workspace = true }
+
+
+indextree = { version = "4.7" }

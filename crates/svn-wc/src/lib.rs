@@ -1,3 +1,4 @@
+pub mod adm;
 pub mod db;
 pub use db::DbStatus;
 pub use db::WcDb;
