@@ -16,3 +16,16 @@ pub enum NodeKind {
     /// something's here, but we don't know what
     Unknown,
 }
+
+impl NodeKind {
+    /// `kind_map_none`
+    pub fn as_str(&self) -> &str {
+        match self {
+            NodeKind::None => "none",
+            NodeKind::File => "file",
+            NodeKind::Directory => "dir",
+            NodeKind::Symlink => "symlink",
+            NodeKind::Unknown => "unknown",
+        }
+    }
+}

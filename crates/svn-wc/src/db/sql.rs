@@ -2,6 +2,7 @@
 //!
 
 use rusqlite::Connection;
+use svn_types::Depth;
 
 use super::DBError;
 use super::WcRoot;
@@ -68,6 +69,52 @@ impl WcRoot {
                 })
             })
             .map_err(|e| DBError::from(e))
+    }
+
+    /// `STMT_CLEAR_ACTUAL_NODE_LEAVING_CONFLICT`
+    pub fn clear_actual_node_leaving_conflict(&self, local_relpath: &str) -> Result<(), DBError> {
+        const STMT: &str = r#"
+        UPDATE actual_node
+        SET properties = NULL,
+            text_mod = NULL,
+            tree_conflict_data = NULL,
+            older_checksum = NULL,
+            left_checksum = NULL,
+            right_checksum = NULL,
+            changelist = NULL
+        WHERE wc_id = ?1 AND local_relpath = ?2
+            "#;
+        self.conn()
+            .execute(STMT, &[&self.wc_id_str(), local_relpath])
+            .map_err(|e| DBError::from(e))?;
+        Ok(())
+    }
+
+    /// `STMT_DELETE_ACTUAL_NODE`
+    pub fn delete_actual_node(&self, local_relpath: &str) -> Result<(), DBError> {
+        const STMT: &str = r#"
+        DELETE FROM actual_node
+        WHERE wc_id = ?1 AND local_relpath = ?2
+            "#;
+        self.conn()
+            .execute(STMT, &[&self.wc_id_str(), local_relpath])
+            .map_err(|e| DBError::from(e))?;
+        Ok(())
+    }
+
+    /// `STMT_UPDATE_NODE_BASE_DEPTH`
+    pub fn update_node_base_depth(&self, local_relpath: &str, depth: Depth) -> Result<(), DBError> {
+        const STMT: &str = r#"
+        UPDATE nodes SET depth = ?3
+        WHERE wc_id = ?1 AND local_relpath = ?2 AND op_depth = 0
+          AND kind=MAP_DIR
+          AND presence IN (MAP_NORMAL, MAP_INCOMPLETE)
+          "#;
+        self.conn()
+            .execute(STMT, &[&self.wc_id_str(), local_relpath, &depth.as_str()])
+            .map_err(|e| DBError::from(e))?;
+
+        Ok(())
     }
 }
 

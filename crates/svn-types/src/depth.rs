@@ -43,3 +43,17 @@ pub enum Depth {
     /// Equivalent to the pre-1.5 default update behavior.
     Infinity,
 }
+
+impl Depth {
+    /// `svn_token_map_t` depth_map
+    pub fn as_str(&self) -> &'static str {
+        match self {
+            Depth::Unknown => "unknown",
+            Depth::Exclude => "exclude",
+            Depth::Empty => "empty",
+            Depth::Files => "files",
+            Depth::Immediates => "immediates",
+            Depth::Infinity => "infinity",
+        }
+    }
+}

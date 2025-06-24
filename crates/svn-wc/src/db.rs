@@ -72,6 +72,21 @@ pub enum DbStatus {
     BaseDeleted,
 }
 
+impl DbStatus {
+    /// `presence_map`
+    pub fn as_str(&self) -> &'static str {
+        match self {
+            Self::Normal => "normal",
+            Self::ServerExcluded => "server-excluded",
+            Self::Excluded => "excluded",
+            Self::NotPresent => "not-present",
+            Self::Incomplete => "incomplete",
+            Self::BaseDeleted => "base-deleted",
+            _ => unreachable!(),
+        }
+    }
+}
+
 /// Lock information.  We write/read it all as one, so let's use a struct
 /// for convenience.
 ///

@@ -24,7 +24,7 @@ pub struct ParsedAcl {
     /// The set of access control entries that use aliases. In the second
     /// pass, aliases in these entries will be expanded and merged into ACES.
     /// The entries are allocated from the parser pool.
-    alias_aces: HashMap<String , AuthzAce>,
+    alias_aces: HashMap<String, AuthzAce>,
 }
 
 /// Temporary group definition constructed by the authz/group parser.
