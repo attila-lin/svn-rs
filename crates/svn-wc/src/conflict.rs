@@ -23,6 +23,6 @@
 /// interaction.
 ///
 /// @since New in 1.7.
-/// 
+///
 /// `svn_wc_conflict_resolver_func2_t`
 pub type WcConflictResolverFunc = Box<dyn Fn(&str, &str, &str) -> Result<(), String> + Send + Sync>;

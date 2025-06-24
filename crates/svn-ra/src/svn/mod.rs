@@ -5,3 +5,4 @@ pub mod cram;
 pub mod editor;
 mod item;
 mod marshal;
+pub mod reporter;

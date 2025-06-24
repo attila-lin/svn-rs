@@ -1,4 +1,7 @@
+mod crawler;
 mod error;
+pub mod files;
+mod ops;
 pub use error::AdmError;
 
 use std::path::Path;
@@ -7,6 +10,21 @@ use svn_types::{Depth, RevisionNumber};
 use uuid::Uuid;
 
 use crate::WcDb;
+
+/*** Names and file/dir operations in the administrative area. ***/
+
+/** The files within the administrative subdir. **/
+const ADM_FORMAT: &str = "format";
+const ADM_ENTRIES: &str = "entries";
+const ADM_TMP: &str = "tmp";
+const ADM_PRISTINE: &str = "pristine";
+const ADM_NONEXISTENT_PATH: &str = "nonexistent-path";
+const ADM_EXPERIMENTAL: &str = "experimental";
+
+/// The basename of the ".prej" file, if a directory ever has property
+/// conflicts.  This .prej file will appear *within* the conflicted
+/// directory.
+const THIS_DIR_PREJ: &str = "dir_conflicts";
 
 /// The default name of the WC admin directory. This name is always
 /// checked by svn_wc_is_adm_dir.

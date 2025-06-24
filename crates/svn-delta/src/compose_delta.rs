@@ -57,11 +57,13 @@ impl OffsetIndex {
         ret
     }
 
-    /* Find the index of the delta op thet defines that data at OFFSET in
-    NDX. HINT is an arbitrary positin within NDX and doesn't even need
-    to be valid. To effectively speed up the search, use the last result
-    as hint because most lookups come as a sequence of decreasing values
-    for OFFSET and they concentrate on the lower end of the array. */
+    /// Find the index of the delta op thet defines that data at OFFSET in
+    /// NDX. HINT is an arbitrary positin within NDX and doesn't even need
+    /// to be valid. To effectively speed up the search, use the last result
+    /// as hint because most lookups come as a sequence of decreasing values
+    /// for OFFSET and they concentrate on the lower end of the array.
+    ///
+    /// `search_offset_index`
     fn search_offset(&self, offset: usize, hint: usize) -> usize {
         // Implementation would be similar to the C version but using Rust's
         // built-in binary search capabilities
