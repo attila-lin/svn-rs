@@ -1,7 +1,10 @@
 mod capability;
 mod loader;
 mod ra_layer;
+
 pub mod session;
+pub use session::SvnRaSession;
+
 pub mod svn;
 
 mod connection;

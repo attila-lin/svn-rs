@@ -8,4 +8,5 @@ mod error;
 pub mod info;
 pub mod layout;
 pub mod status;
+pub mod update;
 pub use error::Error;
