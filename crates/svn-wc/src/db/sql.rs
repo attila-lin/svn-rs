@@ -14,11 +14,13 @@ impl WcRoot {
         &self.sdb.conn
     }
 
+    #[inline]
     fn wc_id(&self) -> i64 {
         // self.sdb.wc_id
         todo!()
     }
 
+    #[inline]
     fn wc_id_str(&self) -> String {
         self.wc_id().to_string()
     }

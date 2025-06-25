@@ -3,8 +3,10 @@
 use std::collections::HashMap;
 
 use svn_subr::auth::AuthBaton;
+use url::Url;
 
 use crate::Connection;
+
 /* The RA session object. */
 /// A repository access session.  This object is used to perform requests
 /// to a repository, identified by a URL.
@@ -12,9 +14,55 @@ use crate::Connection;
 /// `svn_ra_session_t`
 ///
 /// `libsvn_ra_svn/client.c`
-pub struct SvnRaSession; //(Box<dyn RaSession>);
+pub struct SvnRaSession(Box<dyn RaSession>);
 
-impl SvnRaSession {}
+impl SvnRaSession {
+    /* Ensure that RA_SESSION's session URL matches SESSION_URL,
+       reparenting that session if necessary.
+       Store the previous session URL in *OLD_SESSION_URL (so that if the
+       reparenting is meant to be temporary, the caller can reparent the
+       session back to where it was).
+
+       If SESSION_URL is NULL, treat this as a magic value meaning "point
+       the RA session to the root of the repository".
+
+       NOTE: The typical usage pattern for this functions is:
+
+           const char *old_session_url;
+           SVN_ERR(svn_client__ensure_ra_session_url(&old_session_url,
+                                                     ra_session,
+                                                     new_session_url,
+                                                     pool);
+
+           [...]
+
+           SVN_ERR(svn_ra_reparent(ra_session, old_session_url, pool));
+    */
+    /// `ensure_ra_session_url`
+    pub fn ensure_ra_session_url(&self, session_url: &Url) -> Result<Url, String> {
+        let old_session_url = self.get_session_url()?;
+
+        let ret = match old_session_url {
+            Some(o) => o,
+            None => self.get_repos_root()?,
+        };
+        if ret != session_url {
+            self.reparent(session_url)?;
+        }
+
+        Ok(ret)
+    }
+
+    /** Set @a *url to the session URL -- the URL to which @a ra_session was
+     * opened or most recently reparented.
+     *
+     * @since New in 1.5.
+     */
+    /// `svn_ra_get_session_url`
+    pub fn get_session_url(&self) -> Result<Url, String> {
+        self.0.get_session_url()
+    }
+}
 
 pub type SvnVersion = String;
 
@@ -37,7 +85,11 @@ pub trait RaSession {
     fn open_session(corrected_url: &str, redirect_url: &str, session_url: &str) -> Self
     where
         Self: Sized;
+
+    /// See svn_ra_get_session_url().
+    fn get_session_url(&self) -> Result<Url, String>;
 }
+
 /// Implementation of the `RaSession` trait for `SvnRaSession`.
 impl RaSession for SvnRaSession {
     fn get_version(&self) -> SvnVersion {

@@ -7,13 +7,14 @@ version.workspace = true
 [dependencies]
 svn-delta = { workspace = true }
 svn-types = { workspace = true }
-
+svn-subr= { workspace = true }
 
 strum = { workspace = true }
-svn-subr.workspace = true
-
 bytes = { workspace = true }
 thiserror = { workspace = true }
+url = { workspace = true }
+
 [features]
-_sasl = [] # SVN_HAVE_SASL
 default = []
+
+_sasl = [] # SVN_HAVE_SASL
