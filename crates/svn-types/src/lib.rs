@@ -6,6 +6,9 @@ pub use node_kind::NodeKind;
 mod commit_info;
 
 pub mod error;
+pub use error::SvnError;
+pub use error::SvnFsError;
+pub use error::SvnRaError;
 
 mod depth;
 pub use depth::Depth;

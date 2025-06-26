@@ -126,7 +126,7 @@ impl Node {
 #[derive(Debug)]
 pub struct SortedPattern {
     /// The filtered tree node carrying the prefix.
-    node: Box<Node>,
+    node: Arc<Node>,
 }
 
 /// Substructure of node_t.  It contains all sub-node that use patterns
@@ -325,8 +325,8 @@ impl AuthzGlobalRights {
             }
         }
 
-        /* Fall-through: return the rights defined for "any" repository
-        because this user has no specific rules for this specific REPOS. */
+        // Fall-through: return the rights defined for "any" repository
+        // because this user has no specific rules for this specific REPOS.
         *rights = self.all_reps_rights;
         false
     }
@@ -440,6 +440,7 @@ impl LookupState {
 }
 
 /// The segment type.
+///
 /// `authz_rule_segment_t`
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum AuthzRuleSegmentKind {

@@ -2,6 +2,13 @@
 
 #[allow(missing_docs)]
 #[derive(Debug, thiserror::Error)]
+pub enum SvnError {
+    #[error(transparent)]
+    Fs(#[from] SvnFsError),
+}
+
+#[allow(missing_docs)]
+#[derive(Debug, thiserror::Error)]
 pub enum SvnFsError {
     #[error("General filesystem error")]
     General,
@@ -186,4 +193,48 @@ pub enum SvnFsError {
     RepSharingNotAllowed,
     #[error("Rep-sharing is not supported.")]
     RepSharingNotSupported,
+}
+
+/* generic RA errors */
+#[allow(missing_docs)]
+#[derive(Debug, thiserror::Error)]
+pub enum SvnRaError {
+    #[error("Bad URL passed to RA layer")]
+    IllegalUrl,
+
+    #[error("Authentication failed")]
+    NotAuthenticated,
+
+    #[error("Unknown authentication method")]
+    UnknownAuth,
+
+    #[error("Repository access method not implemented")]
+    NotImplemented,
+
+    #[error("Item is out of date")]
+    OutOfDate,
+
+    #[error("Repository has no UUID")]
+    NoReposUUID,
+
+    #[error("Unsupported RA plugin ABI version")]
+    UnsupportedABIVersion,
+
+    #[error("Path is not locked")]
+    NotLocked,
+
+    #[error("Server can only replay from the root of a repository")]
+    PartialReplayNotSupported,
+
+    #[error("Repository UUID does not match expected UUID")]
+    UUIDMismatch,
+
+    #[error("Repository root URL does not match expected root URL")]
+    RootUrlMismatch,
+    #[error("Session URL does not match expected session URL")]
+    SessionUrlMismatch,
+    #[error("Can't create tunnel")]
+    CannotCreateTunnel,
+    #[error("Can't create session")]
+    CannotCreateSession,
 }

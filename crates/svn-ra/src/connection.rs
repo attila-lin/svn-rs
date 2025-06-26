@@ -10,6 +10,7 @@ pub enum ConnectionError {}
 
 /// This structure is opaque to the server.  The client pokes at the
 /// first few fields during setup and cleanup.
+///
 /// `svn_ra_svn_conn_st`
 pub struct Connection {
     write_buf: BytesMut,

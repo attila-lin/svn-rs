@@ -38,3 +38,8 @@ pub fn is_url(path: &str) -> bool {
 pub fn url_add_component(url: Url, component: &str) -> Url {
     url.join(component).unwrap()
 }
+
+/// `svn_path_url_add_component2`
+pub fn add_component() {
+    todo!()
+}

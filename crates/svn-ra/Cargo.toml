@@ -17,4 +17,8 @@ url = { workspace = true }
 [features]
 default = []
 
+client = []
+server = []
+
+_sasl = [] # SVN_HAVE_SASL
 _sasl = [] # SVN_HAVE_SASL

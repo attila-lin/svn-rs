@@ -2,6 +2,7 @@
 
 use std::path::PathBuf;
 
+use svn_ra::Reporter;
 use svn_types::{Depth, RevisionNumber};
 use svn_wc::WcContext;
 
@@ -29,7 +30,7 @@ pub struct LayoutBaton {
 /// `svn_client__layout_func_t`
 type LayoutFunc = Box<dyn FnMut(&mut LayoutBaton) -> Result<(), LayoutError>>;
 
-impl LayoutBaton {
+impl Reporter for LayoutBaton {
     /// `layout_set_path`
     pub fn set_path(
         &mut self,
