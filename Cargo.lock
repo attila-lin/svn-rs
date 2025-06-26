@@ -1419,7 +1419,6 @@ name = "svn-ra"
 version = "0.0.0"
 dependencies = [
  "bytes",
- "md-5",
  "strum",
  "svn-delta",
  "svn-subr",
