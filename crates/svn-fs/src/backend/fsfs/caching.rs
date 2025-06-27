@@ -84,7 +84,7 @@ pub fn read_config(fs: &SvnFs) -> Result<(String, bool, bool, bool), CachingErro
     // Pre-1.10, this was controlled by the SVN_FS_CONFIG_FSFS_CACHE_FULLTEXTS
     // configuration option which defaulted to TRUE.
     let cache_nodeprops =
-        svn_subr::hash::get_bool(&fs.config(), SVN_FS_CONFIG_FSFS_CACHE_NODEPROPS, true);
+        svn_subr::hash::get_bool(fs.config(), SVN_FS_CONFIG_FSFS_CACHE_NODEPROPS, true);
 
     Ok((
         cache_namespace,

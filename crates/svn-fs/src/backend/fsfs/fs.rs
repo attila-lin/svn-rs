@@ -435,7 +435,7 @@ impl FsFsBackend {
         let (cache_namespace, cache_txdeltas, cache_fulltexts, cache_nodeprops) =
             super::caching::read_config(&fs)?;
 
-        let prefix = format!("ns:{}:{}", cache_namespace, prefix);
+        let prefix = format!("ns:{cache_namespace}:{prefix}");
         let has_namespace = !cache_namespace.is_empty();
 
         todo!()

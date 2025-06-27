@@ -7,7 +7,8 @@ use url::Url;
 
 use crate::Connection;
 
-/* The RA session object. */
+// The RA session object.
+
 /// A repository access session.  This object is used to perform requests
 /// to a repository, identified by a URL.
 ///
@@ -53,11 +54,11 @@ impl SvnRaSession {
         Ok(ret)
     }
 
-    /** Set @a *url to the session URL -- the URL to which @a ra_session was
-     * opened or most recently reparented.
-     *
-     * @since New in 1.5.
-     */
+    /// Set @a *url to the session URL -- the URL to which @a ra_session was
+    /// opened or most recently reparented.
+    ///
+    /// @since New in 1.5.
+    ///
     /// `svn_ra_get_session_url`
     pub fn get_session_url(&self) -> Result<Url, String> {
         self.0.get_session_url()
@@ -79,9 +80,9 @@ pub trait RaSession {
     fn get_schemes(&self) -> Vec<&'static str> {
         vec!["svn"]
     }
-    /* See svn_ra_open5(). */
-    // All fields in SESSION, except priv, have been initialized by the
-    // time this is called.  SESSION->priv may be set by this function.
+    /// See svn_ra_open5().
+    /// All fields in SESSION, except priv, have been initialized by the
+    /// time this is called.  SESSION->priv may be set by this function.
     fn open_session(corrected_url: &str, redirect_url: &str, session_url: &str) -> Self
     where
         Self: Sized;
@@ -109,6 +110,10 @@ impl RaSession for SvnRaSession {
     where
         Self: Sized,
     {
+        todo!()
+    }
+
+    fn get_session_url(&self) -> Result<Url, String> {
         todo!()
     }
 }

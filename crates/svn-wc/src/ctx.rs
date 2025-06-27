@@ -122,23 +122,21 @@ impl WcContext {
 
         Ok(status)
     }
-    /**
-     * Get the changed revision, date and author for @a local_abspath using @a
-     * wc_ctx.  Allocate the return values in @a result_pool; use @a scratch_pool
-     * for temporary allocations.  Any of the return pointers may be @c NULL, in
-     * which case they are not set.
-     *
-     * If @a local_abspath is not in the working copy, return
-     * @c SVN_ERR_WC_PATH_NOT_FOUND.
-     */
+
+    /// Get the changed revision, date and author for @a local_abspath using @a
+    /// wc_ctx.  Allocate the return values in @a result_pool; use @a scratch_pool
+    /// for temporary allocations.  Any of the return pointers may be @c NULL, in
+    /// which case they are not set.
+    ///
+    /// If @a local_abspath is not in the working copy, return
+    /// @c SVN_ERR_WC_PATH_NOT_FOUND.
+    ///
     /// `svn_wc__node_get_changed_info`
     pub fn get_changed_info(
         &self,
         local_abspath: &str,
     ) -> Result<(RevisionNumber, i64, &str), Error> {
-        self.db
-            .read_info(local_abspath)
-            .map_err(|e| Error::from(e))?;
+        self.db.read_info(local_abspath).map_err(Error::from)?;
         todo!()
     }
 }

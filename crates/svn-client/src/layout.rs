@@ -38,7 +38,7 @@ impl Reporter for LayoutBaton {
         revision: Option<i64>,
         depth: Depth,
         start_empty: bool,
-        lock_token: &str,
+        lock_token: Option<&str>,
     ) -> Result<(), LayoutError> {
         let _ = lock_token;
         let local_abspath = self.root_abspath.join(path);

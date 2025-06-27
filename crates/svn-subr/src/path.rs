@@ -72,9 +72,9 @@ pub fn url_add_component(url: Url, component: &str) -> Url {
 ///  *       merely undefined right now.
 ///  *
 ///  * @since New in 1.6.
-/// 
+///
 /// `svn_path_url_add_component2`
-pub fn add_component(url: &Url, component: &str) -> Result<Url, PathError>  {
-    let ret =  url.join(component)?;
+pub fn add_component(url: &Url, component: &str) -> Result<Url, PathError> {
+    let ret = url.join(component)?;
     Ok(ret)
 }

@@ -2,9 +2,12 @@ use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 
 use svn_subr::SvnConfig;
-use svn_types::NodeKind;
+use svn_types::{Depth, NodeKind, RevisionNumber};
+use url::Url;
+use uuid::Uuid;
 
 use crate::Error;
+use crate::sqlite::SqliteDb;
 use crate::status::RevisionStatus;
 
 mod error;
@@ -423,6 +426,45 @@ impl WcDb {
     /// `svn_wc__db_read_info`
     pub fn read_info<P: AsRef<Path>>(&self, local_abspath: P) -> Result<(), Error> {
         let p = local_abspath.as_ref();
+        todo!()
+    }
+
+    /// `svn_wc__db_init`
+    pub fn init(
+        config: &SvnConfig,
+        target_format: i32,
+        local_abspath: &Path,
+        repos_relpath: &Path,
+        repos_root_url: &Url,
+        repos_uuid: &Uuid,
+        initial_rev: RevisionNumber,
+        depth: Depth,
+        store_pristine: bool,
+    ) -> Result<Self, Error> {
+        assert!(local_abspath.is_absolute());
+        assert!(matches!(
+            depth,
+            Depth::Empty | Depth::Files | Depth::Immediates | Depth::Infinity
+        ));
+
+        let sqlite_exclusive = config.get_bool("working-copy", "exclusive-locking", false)?;
+
+        /* Create the SDB and insert the basic rows.  */
+        let sdb = Self::create_db();
+
+        todo!()
+    }
+
+    /// Create an sqlite database with schema TARGET_FORMAT at DIR_ABSPATH/SDB_FNAME
+    /// and insert records for REPOS_ID (using REPOS_ROOT_URL and REPOS_UUID) into
+    /// REPOSITORY and for WC_ID into WCROOT. Return the DB connection in *SDB.
+    ///
+    /// If ROOT_NODE_REPOS_RELPATH is not NULL, insert a BASE node at
+    /// the working copy root with repository relpath ROOT_NODE_REPOS_RELPATH,
+    /// revision ROOT_NODE_REVISION and depth ROOT_NODE_DEPTH.
+    ///
+    /// `create_db`
+    fn create_db() -> Result<SqliteDb, Error> {
         todo!()
     }
 }

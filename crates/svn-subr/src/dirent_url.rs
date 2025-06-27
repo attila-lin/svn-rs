@@ -1,8 +1,8 @@
 use url::Url;
 
-/** Return TRUE if @a parent_uri is an ancestor of @a child_uri or
- * the uris are equal, and FALSE otherwise.
- */
+/// Return TRUE if @a parent_uri is an ancestor of @a child_uri or
+/// the uris are equal, and FALSE otherwise.
+///
 /// `svn_uri__is_ancestor`
 pub fn is_ancestor(parent_uri: &Url, child_uri: &Url) -> bool {
     // Both URLs must have the same scheme, host, and port to be considered related

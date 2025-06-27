@@ -1372,6 +1372,7 @@ name = "svn-client"
 version = "0.0.0"
 dependencies = [
  "bitflags",
+ "glob",
  "svn-diff",
  "svn-ra",
  "svn-subr",
@@ -1479,6 +1480,7 @@ dependencies = [
  "svn-subr",
  "svn-types",
  "thiserror 2.0.12",
+ "url",
  "uuid",
 ]
 
