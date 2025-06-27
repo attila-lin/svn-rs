@@ -25,7 +25,7 @@ pub fn dirent_fetcher(
     repos_root_url: &Url,
     repos_relpath: &str,
 ) -> Result<(), Error> {
-    let url = svn_subr::path::add_component(repos_root_url, repos_relpath);
+    let url = svn_subr::path::add_component(repos_root_url, repos_relpath)?;
     let session_relpath = if !svn_subr::dirent_url::is_ancestor(dfb.anchor_url, url) {
         dfb.ra_session.ensure_ra_session_url(url)?;
         ""

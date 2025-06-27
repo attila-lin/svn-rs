@@ -14,7 +14,7 @@ pub enum LayoutError {}
 pub struct LayoutItem {
     local_abspath: PathBuf,
     url: String,
-    revision: RevisionNumber,
+    revision: Option<RevisionNumber>,
     depth: Depth,
 }
 
@@ -31,15 +31,16 @@ pub struct LayoutBaton {
 type LayoutFunc = Box<dyn FnMut(&mut LayoutBaton) -> Result<(), LayoutError>>;
 
 impl Reporter for LayoutBaton {
-    /// `layout_set_path`
-    pub fn set_path(
+    // `layout_set_path`
+    fn set_path(
         &mut self,
         path: &str,
-        revision: RevisionNumber,
+        revision: Option<i64>,
         depth: Depth,
         start_empty: bool,
         lock_token: &str,
     ) -> Result<(), LayoutError> {
+        let _ = lock_token;
         let local_abspath = self.root_abspath.join(path);
         let url = if !self.stack.is_empty() {
             let last = self.stack.last().unwrap();
@@ -56,6 +57,30 @@ impl Reporter for LayoutBaton {
 
         self.stack.push(it);
 
+        todo!()
+    }
+
+    fn delete_path(&mut self, path: &str) -> Result<(), svn_types::SvnError> {
+        todo!()
+    }
+
+    fn link_path(
+        &mut self,
+        path: &str,
+        url: &str,
+        revision: Option<i64>,
+        depth: Depth,
+        start_empty: bool,
+        lock_token: Option<&str>,
+    ) -> Result<(), svn_types::SvnError> {
+        todo!()
+    }
+
+    fn finish_report(&mut self) -> Result<(), svn_types::SvnError> {
+        todo!()
+    }
+
+    fn abort_report(&mut self) -> Result<(), svn_types::SvnError> {
         todo!()
     }
 }

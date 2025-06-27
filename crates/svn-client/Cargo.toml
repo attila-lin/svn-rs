@@ -14,3 +14,4 @@ svn-wc = { workspace = true }
 thiserror = { workspace = true }
 url = { workspace = true }
 uuid = { workspace = true }
+bitflags = { workspace = true }

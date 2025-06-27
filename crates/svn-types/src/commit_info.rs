@@ -5,7 +5,7 @@ use crate::RevisionNumber;
 /// @note Objects of this type should always be created using the
 ///  [`svn_create_commit_info`]() function.
 ///
-/// @from svn_types.h svn_commit_info_t
+/// @from svn_types.h `svn_commit_info_t`
 pub struct CommitInfo {
     /// just-committed revision.
     revision: RevisionNumber,
