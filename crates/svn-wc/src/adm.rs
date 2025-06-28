@@ -2,9 +2,9 @@ mod crawler;
 mod error;
 pub mod files;
 mod ops;
-pub use error::AdmError;
+use std::path::{Path, PathBuf};
 
-/*** Names and file/dir operations in the administrative area. ***/
+pub use error::AdmError;
 
 /** The files within the administrative subdir. **/
 const ADM_FORMAT: &str = "format";
@@ -30,4 +30,10 @@ const ADM_DIR_NAME: &str = DEFAULT_ADM_DIR_NAME;
 
 pub struct Adm;
 
-impl Adm {}
+/// util
+impl Adm {
+    /// `svn_wc__adm_child`
+    pub fn child(path: &Path, child: &str) -> PathBuf {
+        path.join(ADM_DIR_NAME).join(child)
+    }
+}
