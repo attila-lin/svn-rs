@@ -6,4 +6,7 @@ pub enum Error {
 
     #[error(transparent)]
     Db(#[from] crate::db::DBError),
+
+    #[error(transparent)]
+    Config(#[from] svn_subr::config::ConfigError),
 }

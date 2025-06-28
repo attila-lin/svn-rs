@@ -12,11 +12,23 @@ use crate::status::RevisionStatus;
 
 mod error;
 pub mod sql;
+pub mod util;
 pub use error::DBError;
 
 mod wcroot;
 
 use crate::root::WcRoot;
+
+/// `svn_sqlite__mode_e`
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum SqliteMode {
+    /// open the database read-only
+    ReadOnly,
+    /// open the database read-write
+    ReadWrite,
+    /// open/create the databse read-write
+    RwCreate,
+}
 
 /// Enumerated values describing the state of a node.
 ///
@@ -450,7 +462,7 @@ impl WcDb {
         let sqlite_exclusive = config.get_bool("working-copy", "exclusive-locking", false)?;
 
         /* Create the SDB and insert the basic rows.  */
-        let sdb = Self::create_db();
+        let sdb = Self::create_db()?;
 
         todo!()
     }
