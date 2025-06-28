@@ -4,21 +4,22 @@ pub mod cancel;
 pub mod cat;
 pub mod cmdline;
 pub mod ctx;
-mod error;
 pub mod info;
 pub mod layout;
 pub mod status;
 pub mod update;
+
+mod error;
 pub use error::Error;
 
 use bitflags::bitflags;
 
 bitflags! {
-/// @name Commit state flags
-/// @brief State flags for use with the #svn_client_commit_item3_t structure
-/// (see the note about the namespace for that structure, which also
-/// applies to these flags).
-/// @{
+    /// @name Commit state flags
+    /// @brief State flags for use with the #svn_client_commit_item3_t structure
+    /// (see the note about the namespace for that structure, which also
+    /// applies to these flags).
+    /// @{
     #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
     pub struct CommitItem: u32 {
         const ADD = 0x01;

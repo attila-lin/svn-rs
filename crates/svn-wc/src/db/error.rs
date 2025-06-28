@@ -6,7 +6,7 @@ pub enum DBError {
     #[error(transparent)]
     Io(#[from] std::io::Error),
     #[error(transparent)]
-    Sqlite(#[from] rusqlite::Error),
+    Sqlite(#[from] crate::sqlite::SqliteError),
     #[error("Working copy database {0:?} not found")]
     NotFound(PathBuf),
 }

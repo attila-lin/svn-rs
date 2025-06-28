@@ -1,3 +1,5 @@
+pub mod queries;
+
 use std::{path::Path, time::Duration};
 
 use rusqlite::Connection;
@@ -41,9 +43,9 @@ impl SqliteDb {
     pub fn open(
         path: &Path,
         mode: SqliteMode,
-        statements: &Vec<String>,
-        lastest_schema: i32,
-        upgrade_sql: &str,
+        statements: &[String],
+        _lastest_schema: i32,
+        _upgrade_sql: Option<&str>,
         timeout: i32,
     ) -> Result<Self, SqliteError> {
         let conn = Self::_open(path, mode, timeout)?;
@@ -70,5 +72,12 @@ impl SqliteDb {
         };
         conn.busy_timeout(Duration::from_secs(timeout as u64))?;
         Ok(conn)
+    }
+    
+    /// `svn_sqlite__exec_statements`
+    pub fn exec_statements(& self, stmt: &str) -> Result<(), SqliteError> {
+        let  conn = &self.conn;
+        conn.execute(stmt, [])?;
+        Ok(())
     }
 }

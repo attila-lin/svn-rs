@@ -186,25 +186,24 @@ pub fn dir_make_hidden(path: &Path) -> Result<(), std::io::Error> {
     Ok(())
 }
 
-/** Determine the @a kind of @a path.  @a path should be UTF-8 encoded.
- *
- * If @a path is a file, set @a *kind to #svn_node_file.
- *
- * If @a path is a directory, set @a *kind to #svn_node_dir.
- *
- * If @a path does not exist, set @a *kind to #svn_node_none.
- *
- * If @a path exists but is none of the above, set @a *kind to
- * #svn_node_unknown.
- *
- * If @a path is not a valid pathname, set @a *kind to #svn_node_none.  If
- * unable to determine @a path's kind for any other reason, return an error,
- * with @a *kind's value undefined.
- *
- * Use @a pool for temporary allocations.
- *
- * @see svn_node_kind_t
- */
+/// Determine the @a kind of @a path.  @a path should be UTF-8 encoded.
+///
+/// If @a path is a file, set @a *kind to #svn_node_file.
+///
+/// If @a path is a directory, set @a *kind to #svn_node_dir.
+///
+/// If @a path does not exist, set @a *kind to #svn_node_none.
+///
+/// If @a path exists but is none of the above, set @a *kind to
+/// #svn_node_unknown.
+///
+/// If @a path is not a valid pathname, set @a *kind to #svn_node_none.  If
+/// unable to determine @a path's kind for any other reason, return an error,
+/// with @a *kind's value undefined.
+///
+/// Use @a pool for temporary allocations.
+///
+/// @see svn_node_kind_t
 pub fn check_path(path: &Path) -> Result<NodeKind, std::io::Error> {
     if !path.exists() {
         return Ok(NodeKind::None);
