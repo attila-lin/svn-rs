@@ -30,10 +30,10 @@ pub fn open_db(
 
     let sdb = SqliteDb::open(&sdb_abspath, smode, my_statements, 0, None, timeout)?;
 
-    if  exclusive {
+    if exclusive {
         sdb.exec_statements(STMT_PRAGMA_LOCKING_MODE)?;
     }
-    
+
     // FIXME:
     // sdb.create_scalar_function("relpath_depth", 1, true, realpath_depth_sqlite, None)?;
 

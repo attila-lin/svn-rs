@@ -39,13 +39,13 @@ impl SvnRaSession {
 
            SVN_ERR(svn_ra_reparent(ra_session, old_session_url, pool));
     */
-    /// `ensure_ra_session_url`
+    /// `svn_client__ensure_ra_session_url`
     pub fn ensure_ra_session_url(&self, session_url: &Url) -> Result<Url, String> {
         let old_session_url = self.get_session_url()?;
 
         let ret = match old_session_url {
-            Some(o) => o,
-            None => self.get_repos_root()?,
+            Some(o) => Some(o),
+            None => self.get_repos_root(session_url)?,
         };
         if ret != session_url {
             self.reparent(session_url)?;
@@ -60,8 +60,32 @@ impl SvnRaSession {
     /// @since New in 1.5.
     ///
     /// `svn_ra_get_session_url`
-    pub fn get_session_url(&self) -> Result<Url, String> {
+    pub fn get_session_url(&self) -> Result<Option<Url>, String> {
         self.0.get_session_url()
+    }
+
+    fn get_repos_root(&self, url: Option<&Url>) -> Result<Option<Url>, String> {
+        let ret = self.0.get_repos_root(url)?;
+        Ok(ret)
+    }
+
+    /// Change the root URL of an open @a ra_session to point to a new path in the
+    ///  * same repository.  @a url is the new root URL.  Use @a pool for
+    ///  * temporary allocations.
+    ///  *
+    ///  * If @a url has a different repository root than the current session
+    ///  * URL, return @c SVN_ERR_RA_ILLEGAL_URL.
+    ///  *
+    ///  * @since New in 1.4.
+    /// `svn_ra_reparent`
+    fn reparent(&self, url: Option<&Url>) -> Result<Url, String> {
+        /* Make sure the new URL is in the same repository, so that the
+        implementations don't have to do it. */
+        let repos_root = self.get_repos_root(session_url)?;
+        if !svn_subr::uri::is_ancestor(repos_root, url) {
+            return Err(RaError::IllegalUrl);
+        }
+        todo!()
     }
 }
 
@@ -75,11 +99,13 @@ pub trait RaSession {
     /// Return a short description of the RA implementation, as a localized
     /// string.
     fn get_description(&self) -> &'static str;
+
     /// Return a list of actual URI schemes supported by this implementation.
     /// The returned array is NULL-terminated.
     fn get_schemes(&self) -> Vec<&'static str> {
         vec!["svn"]
     }
+
     /// See svn_ra_open5().
     /// All fields in SESSION, except priv, have been initialized by the
     /// time this is called.  SESSION->priv may be set by this function.
@@ -88,7 +114,13 @@ pub trait RaSession {
         Self: Sized;
 
     /// See svn_ra_get_session_url().
-    fn get_session_url(&self) -> Result<Url, String>;
+    fn get_session_url(&self) -> Result<Option<Url>, String>;
+
+    /// See svn_raget_repos_root2().
+    fn get_repos_root(&self, _url: &Option<Url>) -> Result<Option<Url>, String> {
+        // Placeholder implementation, should be overridden
+        Err("Not implemented".to_string())
+    }
 }
 
 /// Implementation of the `RaSession` trait for `SvnRaSession`.
@@ -113,7 +145,7 @@ impl RaSession for SvnRaSession {
         todo!()
     }
 
-    fn get_session_url(&self) -> Result<Url, String> {
+    fn get_session_url(&self) -> Result<Option<Url>, String> {
         todo!()
     }
 }

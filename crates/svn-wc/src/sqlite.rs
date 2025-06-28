@@ -73,10 +73,10 @@ impl SqliteDb {
         conn.busy_timeout(Duration::from_secs(timeout as u64))?;
         Ok(conn)
     }
-    
+
     /// `svn_sqlite__exec_statements`
-    pub fn exec_statements(& self, stmt: &str) -> Result<(), SqliteError> {
-        let  conn = &self.conn;
+    pub fn exec_statements(&self, stmt: &str) -> Result<(), SqliteError> {
+        let conn = &self.conn;
         conn.execute(stmt, [])?;
         Ok(())
     }

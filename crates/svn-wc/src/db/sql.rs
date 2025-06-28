@@ -1,5 +1,4 @@
 //! `wc-queries.sql`
-//!
 
 use rusqlite::Connection;
 use svn_types::Depth;

@@ -2,7 +2,9 @@
 
 use std::path::Path;
 
+use svn_subr::SvnConfig;
 use svn_types::{Depth, RevisionNumber};
+use url::Url;
 use uuid::Uuid;
 
 use crate::WcDb;
@@ -45,16 +47,16 @@ impl Adm {
     ///
     /// `init_adm`
     pub fn init(
-        db: &WcDb,
+        config: &SvnConfig,
         target_format: i32,
         local_abspath: &Path,
-        repos_relpath: &str,
-        repso_root_url: &str,
+        repos_relpath: &Path,
+        repos_root_url: &Url,
         repos_uuid: &Uuid,
         initial_rev: RevisionNumber,
         depth: Depth,
         store_pristine: bool,
-    ) -> Result<(), AdmError> {
+    ) -> Result<WcDb, crate::Error> {
         /* First, make an empty administrative area. */
         let root = Path::new(local_abspath);
         if !root.exists() {
@@ -72,16 +74,17 @@ impl Adm {
 
         // Create the SDB.
         let wc = WcDb::init(
+            config,
             target_format,
             local_abspath,
             repos_relpath,
-            repso_root_url,
+            repos_root_url,
             repos_uuid,
             initial_rev,
             depth,
             store_pristine,
         )?;
 
-        Ok(())
+        Ok(wc)
     }
 }

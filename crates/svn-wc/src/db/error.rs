@@ -4,6 +4,9 @@ use std::path::PathBuf;
 #[derive(Debug, thiserror::Error)]
 pub enum DBError {
     #[error(transparent)]
+    Db(#[from] rusqlite::Error),
+
+    #[error(transparent)]
     Io(#[from] std::io::Error),
     #[error(transparent)]
     Sqlite(#[from] crate::sqlite::SqliteError),
