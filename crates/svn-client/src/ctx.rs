@@ -86,7 +86,7 @@ pub struct SvnClientCtx {
     /// A working copy context for the client operation to use.
     /// This is initialized by svn_client_create_context() and should never
     /// be @c NULL.
-    wc_ctx: WcContext,
+    pub(crate) wc_ctx: WcContext,
 }
 
 impl SvnClientCtx {

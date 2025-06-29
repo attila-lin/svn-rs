@@ -2,6 +2,29 @@
 
 use std::{collections::HashMap, path::Path};
 
+use crate::{Error, ctx::SvnClientCtx};
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum FileDel {
+    None = 0,
+    OnClose,
+    PoolCleanup,
+}
+
+/// Represents the kind and special status of a directory entry.
+///
+/// Note that the first two fields are exactly identical to svn_io_dirent2_t
+/// to allow returning a svn_io_dirent2_t as a svn_io_dirent_t.
+///
+/// @since New in 1.3.
+///
+///    `svn_io_dirent_t`
+pub struct Dirent {
+    /// the kind of this entry.
+    kind: NodeKind,
+    special: bool,
+}
+
 /// Split PROPERTY and store each individual value in PROPS.
 /// Allocates from POOL.
 pub fn split_props(property: &str) -> Vec<String> {
@@ -75,5 +98,42 @@ pub fn get_paths_auto_props(
 
     if let Some(mimetype) = mimetype {
         properties.insert("svn:mime-type".to_string(), mimetype.to_string());
+    }
+}
+
+impl SvnClientCtx {
+    pub fn add_file(
+        &self,
+        local_abspath: &Path,
+        autoprops: &HashMap<String, Props>,
+        no_autoprops: bool,
+    ) -> Result<(), Error> {
+        /* Check to see if this is a special file. */
+        let (kind, is_special) = svn_subr::io::check_special_path(local_abspath)?;
+
+        /* Determine the properties that the file should have */
+        if is_special {
+            mimetype = None;
+            properties = HashMap::new();
+            properties.insert("special".into(), "*".into());
+        } else {
+            file_autoprops = None;
+
+            if !no_autoprops {
+                if autoprops.is_none() {
+                    get_all_auto_props();
+                }
+            } else {
+                file_autoprops = autoprops;
+            }
+            /* This may fail on write-only files:
+            we open them to estimate file type. */
+            get_paths_auto_props(properties, mimetype, path);
+        }
+        // Add the file
+        self.wc_ctx
+            .add_from_disk(local_abspath, properties, false, self.notify_baton)?;
+
+        Ok(())
     }
 }

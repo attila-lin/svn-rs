@@ -241,9 +241,9 @@ pub fn detect_mimetype(
 ) -> Result<Option<Mime>, std::io::Error> {
     use mime::APPLICATION_OCTET_STREAM;
 
-    /* If there is a mimetype_map provided, we'll first try to look up
-    our file's extension in the map.  Failing that, we'll run the
-    heuristic. */
+    // If there is a mimetype_map provided, we'll first try to look up
+    // our file's extension in the map.  Failing that, we'll run the
+    // heuristic.
     if !mimetype_map.is_empty() {
         let path_ext = path.extension().and_then(|s| s.to_str());
         if let Some(ext) = path_ext
@@ -264,4 +264,37 @@ pub fn detect_mimetype(
     let mimetype = mime_guess::from_path(path).first_or_octet_stream();
 
     Ok(Some(mimetype))
+}
+
+/// Detect the mime-type of the file at LOCAL_ABSPATH using MAGIC_COOKIE.
+/// If the mime-type is binary return the result in *MIMETYPE.
+/// If the file is not a binary file or if its mime-type cannot be determined
+/// set *MIMETYPE to NULL. Allocate *MIMETYPE in RESULT_POOL.
+/// Use SCRATCH_POOL for temporary allocations.
+pub fn detect_binary_mimetype(local_abspath: &Path) -> Result<Option<Mime>, std::io::Error> {
+    // FIXME:
+    if cfg!(feature = "libmagic") {
+        todo!()
+    }
+    Ok(None)
+}
+
+pub fn check_special_path(path: &Path) -> Result<(NodeKind, bool), std::io::Error> {
+    #[cfg(target_os = "windows")]
+    {
+        let is_symlink = path.is_symlink();
+        let kind = check_path(path)?;
+
+        if is_symlink {
+            Ok((NodeKind::File, true)) // On Windows, symlinks are considered special files
+        } else {
+            Ok((kind, false)) // Regular files and directories are not special
+        }
+    }
+    #[cfg(not(target_os = "windows"))]
+    {
+        let kind = check_path(path)?;
+        let is_special = false; // On Unix-like systems, we don't have special files like on Windows
+        Ok((kind, is_special))
+    }
 }
