@@ -1,23 +1,26 @@
+//! wrappers around wc add/mkdir functionality.
+
+use std::{collections::HashMap, path::Path};
+
 /// Split PROPERTY and store each individual value in PROPS.
 /// Allocates from POOL.
 pub fn split_props(property: &str) -> Vec<String> {
     todo!()
 }
 
-/* PROPVALS is a hash mapping char * property names to const char * property
-   values.  PROPERTIES can be empty but not NULL.
-
-   If FILENAME doesn't match the filename pattern PATTERN case insensitively,
-   the do nothing.  Otherwise for each 'name':'value' pair in PROPVALS, add
-   a new entry mappying 'name' to a svn_string_t * wrapping the 'value' in
-   PROPERTIES.  The svn_string_t is allocated in the pool used to allocate
-   PROPERTIES, but the char *'s from PROPVALS are re-used in PROPERTIES.
-   If PROPVALS contains a 'svn:mime-type' mapping, then set *MIMETYPE to
-   the mapped value.  Likewise if PROPVALS contains a mapping for
-   svn:executable, then set *HAVE_EXECUTABLE to TRUE.
-
-   Use SCRATCH_POOL for temporary allocations.
-*/
+/// PROPVALS is a hash mapping char * property names to const char * property
+/// values.  PROPERTIES can be empty but not NULL.
+///
+/// If FILENAME doesn't match the filename pattern PATTERN case insensitively,
+/// the do nothing.  Otherwise for each 'name':'value' pair in PROPVALS, add
+/// a new entry mappying 'name' to a svn_string_t * wrapping the 'value' in
+/// PROPERTIES.  The svn_string_t is allocated in the pool used to allocate
+/// PROPERTIES, but the char *'s from PROPVALS are re-used in PROPERTIES.
+/// If PROPVALS contains a 'svn:mime-type' mapping, then set *MIMETYPE to
+/// the mapped value.  Likewise if PROPVALS contains a mapping for
+/// svn:executable, then set *HAVE_EXECUTABLE to TRUE.
+///
+/// Use SCRATCH_POOL for temporary allocations.
 fn get_auto_props_for_pattern(
     filename: &str,
     pattern: &str,
@@ -29,9 +32,29 @@ fn get_auto_props_for_pattern(
         return;
     }
 
-    for (name, value) in properties {
-        todo!()
-    }
+    for (propname, propval) in properties {
+        let propval_str = value.clone();
 
-    todo!()
+        properites.insert(propname, propval_str);
+        if propname == "mime-type" {
+            mimetype = Some(propval);
+        } else if propname == "executable" {
+            have_executable = true;
+        }
+    }
+}
+
+pub fn get_paths_auto_props(
+    properties: HashMap<String, String>,
+    mimetype: Option<String>,
+    path: &Path,
+) -> () {
+    let mut has_executable = false;
+    let mut mimetype = None;
+
+    if let Some(autoprops) = autoprops {
+        for (pattern, propvals) in autopros {
+            get_auto_props_for_pattern(path.base(), pattern, properties);
+        }
+    }
 }

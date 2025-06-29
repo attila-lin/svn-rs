@@ -1,10 +1,12 @@
 //! `subversion/libsvn_subr/io.c`
 
+use std::collections::HashMap;
 use std::fs::{File, OpenOptions};
 use std::io::{Seek, SeekFrom, Write};
 use std::path::Path;
 use std::path::PathBuf;
 
+use mime::Mime;
 use svn_types::NodeKind;
 
 /// Used as an argument when creating temporary files to indicate
@@ -225,4 +227,35 @@ pub fn check_path(path: &Path) -> Result<NodeKind, std::io::Error> {
 
     // If it exists but is neither a file nor a directory, we consider it unknown
     Ok(NodeKind::Unknown)
+}
+/// `svn_io_detect_mimetype2`
+pub fn detect_mimetype(
+    path: &Path,
+    mimetype_map: &HashMap<String, Mime>,
+) -> Result<Mime, std::io::Error> {
+    use mime::APPLICATION_OCTET_STREAM;
+
+    /* If there is a mimetype_map provided, we'll first try to look up
+    our file's extension in the map.  Failing that, we'll run the
+    heuristic. */
+    if !mimetype_map.is_empty() {
+        let path_ext = path.extension().and_then(|s| s.to_str());
+        if let Some(ext) = path_ext
+            && let Some(type_from_map) = mimetype_map.get(ext)
+        {
+            return Ok(type_from_map.clone());
+        }
+    }
+
+    /* See if this file even exists, and make sure it really is a file. */
+    if !path.exists() {
+        return Err(std::io::Error::other(format!(
+            "Can't detect MIME type of non-file {}",
+            path.display()
+        )));
+    }
+
+    let mimetype = mime_guess::from_path(path).first_or_octet_stream();
+
+    Ok(mimetype)
 }
