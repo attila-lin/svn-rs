@@ -22,6 +22,7 @@ whoami = "1.6.0"
 # filemagic = { version = "0.13.1", features = ["vendored"]
 
 [target.'cfg(unix)'.dependencies]
+libc = { version = "0.2", features = ["extra_traits"] }
 
 [target.'cfg(windows)'.dependencies]
 windows = { version = "0.61", features = [

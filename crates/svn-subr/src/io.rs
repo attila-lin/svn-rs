@@ -228,11 +228,17 @@ pub fn check_path(path: &Path) -> Result<NodeKind, std::io::Error> {
     // If it exists but is neither a file nor a directory, we consider it unknown
     Ok(NodeKind::Unknown)
 }
+/// Detect the mime-type of the file at LOCAL_ABSPATH using MAGIC_COOKIE.
+/// If the mime-type is binary return the result in *MIMETYPE.
+/// If the file is not a binary file or if its mime-type cannot be determined
+/// set *MIMETYPE to NULL. Allocate *MIMETYPE in RESULT_POOL.
+/// Use SCRATCH_POOL for temporary allocations.
+///
 /// `svn_io_detect_mimetype2`
 pub fn detect_mimetype(
     path: &Path,
     mimetype_map: &HashMap<String, Mime>,
-) -> Result<Mime, std::io::Error> {
+) -> Result<Option<Mime>, std::io::Error> {
     use mime::APPLICATION_OCTET_STREAM;
 
     /* If there is a mimetype_map provided, we'll first try to look up
@@ -243,12 +249,12 @@ pub fn detect_mimetype(
         if let Some(ext) = path_ext
             && let Some(type_from_map) = mimetype_map.get(ext)
         {
-            return Ok(type_from_map.clone());
+            return Ok(Some(type_from_map.clone()));
         }
     }
 
     /* See if this file even exists, and make sure it really is a file. */
-    if !path.exists() {
+    if !path.exists() || !path.is_file() {
         return Err(std::io::Error::other(format!(
             "Can't detect MIME type of non-file {}",
             path.display()
@@ -257,5 +263,5 @@ pub fn detect_mimetype(
 
     let mimetype = mime_guess::from_path(path).first_or_octet_stream();
 
-    Ok(mimetype)
+    Ok(Some(mimetype))
 }

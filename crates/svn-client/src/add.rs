@@ -25,7 +25,8 @@ fn get_auto_props_for_pattern(
     filename: &str,
     pattern: &str,
     properties: HashMap<String, String>,
-    // mimetype:
+    mimetype: &mut Option<String>,
+    have_executable: &mut bool,
 ) -> () {
     let pattern = glob::Pattern::new(pattern).unwrap();
     if !pattern.matches(filename) {
@@ -49,12 +50,30 @@ pub fn get_paths_auto_props(
     mimetype: Option<String>,
     path: &Path,
 ) -> () {
-    let mut has_executable = false;
+    let mut have_executable = false;
     let mut mimetype = None;
 
     if let Some(autoprops) = autoprops {
         for (pattern, propvals) in autopros {
-            get_auto_props_for_pattern(path.base(), pattern, properties);
+            get_auto_props_for_pattern(
+                path.base(),
+                pattern,
+                properties,
+                &mut mimetype,
+                &mut have_executable,
+            );
         }
+    }
+
+    // if mimetype has not bben set check the file
+    if mimetype.is_none() {
+        mimetype = svn_subr::io::detect_mimetype(path, &HashMap::new())?;
+        // If we got no mime-type, or if it is "applicateion/octet-steram",
+        // try to get the mime-type from libmagic.
+        // if
+    }
+
+    if let Some(mimetype) = mimetype {
+        properties.insert("svn:mime-type".to_string(), mimetype.to_string());
     }
 }
