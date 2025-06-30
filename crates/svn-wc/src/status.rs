@@ -62,7 +62,7 @@ pub struct Status {
     conflicted: bool,
     /// The status of the node itself. In order of precedence: Obstructions,
     /// structural changes, text changes.
-    node_status: StatusKind,
+    pub node_status: StatusKind,
     /// The status of the entry's text.
     text_status: StatusKind,
     /// The status of the entry's properties.

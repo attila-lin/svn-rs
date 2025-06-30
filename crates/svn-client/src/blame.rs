@@ -7,6 +7,7 @@ use svn_subr::opt::OptRevision;
 use svn_types::RevisionNumber;
 
 /// The metadata associated with a particular revision.
+///
 /// `rev`
 pub struct Rev {
     /// The revision number.

@@ -4,6 +4,7 @@ pub mod cancel;
 pub mod cat;
 pub mod cmdline;
 pub mod ctx;
+pub mod delete;
 pub mod info;
 pub mod layout;
 pub mod status;

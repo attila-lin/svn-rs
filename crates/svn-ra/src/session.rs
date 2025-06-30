@@ -56,10 +56,10 @@ impl SvnRaSession {
             None => self.get_repos_root(session_url)?,
         };
         if &ret != session_url {
-            self.reparent(session_url)?;
+            // self.reparent(session_url)?;
         }
 
-        Ok(ret)
+        Ok(ret.unwrap())
     }
 
     /// Set @a *url to the session URL -- the URL to which @a ra_session was
@@ -78,22 +78,25 @@ impl SvnRaSession {
     }
 
     /// Change the root URL of an open @a ra_session to point to a new path in the
-    ///  * same repository.  @a url is the new root URL.  Use @a pool for
-    ///  * temporary allocations.
-    ///  *
-    ///  * If @a url has a different repository root than the current session
-    ///  * URL, return @c SVN_ERR_RA_ILLEGAL_URL.
-    ///  *
-    ///  * @since New in 1.4.
+    /// same repository.  @a url is the new root URL.  Use @a pool for
+    /// temporary allocations.
+    ///
+    /// If @a url has a different repository root than the current session
+    /// URL, return @c SVN_ERR_RA_ILLEGAL_URL.
+    ///
+    /// @since New in 1.4.
+    ///
     /// `svn_ra_reparent`
-    fn reparent(&self, url: &Option<Url>) -> Result<Url, String> {
+    pub fn reparent(&self, url: &Option<Url>) -> Result<(), RaError> {
         // Make sure the new URL is in the same repository, so that the
         // implementations don't have to do it.
-        let repos_root = self.get_repos_root(url)?.unwrap();
+        let repos_root = self.get_repos_root(url).unwrap().unwrap();
         if !svn_subr::dirent_url::is_ancestor(&repos_root, url.as_ref().unwrap()) {
             return Err(RaError::IllegalUrl);
         }
-        todo!()
+
+        self.0.reparent(url)?;
+        Ok(())
     }
 
     /// * Set @a *kind to the node kind associated with @a path at @a revision.
@@ -154,6 +157,13 @@ pub trait RaSession {
         revision: Option<RevisionNumber>,
     ) -> Result<NodeKind, String> {
         Err("Not implemented".to_string())
+    }
+
+    /// See svn_ra_reparent().
+    /// URL is guaranteed to have what get_repos_root() returns as a prefix.
+    fn reparent(&self, _url: &Option<Url>) -> Result<(), RaError> {
+        // Placeholder implementation, should be overridden
+        Err(RaError::IllegalUrl)
     }
 }
 
