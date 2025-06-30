@@ -8,11 +8,13 @@ pub enum SvnError {
     #[error(transparent)]
     Client(#[from] SvnClientError),
     #[error(transparent)]
-    Misc(#[from] SvnMiscError), 
+    Misc(#[from] SvnMiscError),
     #[error(transparent)]
     Ra(#[from] SvnRaError),
     #[error(transparent)]
     Node(#[from] SvnNodeError),
+    #[error(transparent)]
+    Wc(#[from] SvnWcError),
 }
 
 #[allow(missing_docs)]
@@ -271,4 +273,11 @@ pub enum SvnMiscError {
 pub enum SvnClientError {
     #[error("Attempting restricted operation for modified resource")]
     Modified,
+}
+
+#[allow(missing_docs)]
+#[derive(Debug, thiserror::Error)]
+pub enum SvnWcError {
+    #[error("todo")]
+    CannotDeleteFileExternal,
 }

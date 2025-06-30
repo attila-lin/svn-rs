@@ -1383,6 +1383,7 @@ version = "0.0.0"
 dependencies = [
  "bitflags",
  "glob",
+ "svn-delta",
  "svn-diff",
  "svn-ra",
  "svn-subr",

@@ -10,6 +10,7 @@ pub mod layout;
 pub mod status;
 pub mod update;
 
+mod commit;
 mod error;
 pub use error::Error;
 

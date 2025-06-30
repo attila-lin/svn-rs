@@ -10,6 +10,7 @@ svn-ra = { workspace = true }
 svn-subr = { workspace = true }
 svn-types = { workspace = true }
 svn-wc = { workspace = true }
+svn-delta = { workspace = true }
 
 thiserror = { workspace = true }
 url = { workspace = true }
