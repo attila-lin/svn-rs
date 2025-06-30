@@ -57,16 +57,16 @@ pub struct Status {
     filesize: i64,
     /// If the path is under version control, versioned is TRUE, otherwise
     /// FALSE.
-    versioned: bool,
+    pub versioned: bool,
     /// Set to TRUE if the item is the victim of a conflict.
     conflicted: bool,
     /// The status of the node itself. In order of precedence: Obstructions,
     /// structural changes, text changes.
     pub node_status: StatusKind,
     /// The status of the entry's text.
-    text_status: StatusKind,
+    pub text_status: StatusKind,
     /// The status of the entry's properties.
-    prop_status: StatusKind,
+    pub prop_status: StatusKind,
 
     /// a file or directory can be 'copied' if it's scheduled for
     /// addition-with-history (or part of a subtree that is scheduled as such.).

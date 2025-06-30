@@ -56,6 +56,7 @@ impl SvnRaSession {
             None => self.get_repos_root(session_url)?,
         };
         if &ret != session_url {
+            // FIXME:
             // self.reparent(session_url)?;
         }
 

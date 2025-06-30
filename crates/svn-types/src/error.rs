@@ -5,6 +5,14 @@
 pub enum SvnError {
     #[error(transparent)]
     Fs(#[from] SvnFsError),
+    #[error(transparent)]
+    Client(#[from] SvnClientError),
+    #[error(transparent)]
+    Misc(#[from] SvnMiscError), 
+    #[error(transparent)]
+    Ra(#[from] SvnRaError),
+    #[error(transparent)]
+    Node(#[from] SvnNodeError),
 }
 
 #[allow(missing_docs)]
@@ -237,4 +245,30 @@ pub enum SvnRaError {
     CannotCreateTunnel,
     #[error("Can't create session")]
     CannotCreateSession,
+}
+
+/// Node errors
+#[allow(missing_docs)]
+#[derive(Debug, thiserror::Error)]
+pub enum SvnNodeError {
+    #[error("Unknown svn_node_kind")]
+    UnknownKind,
+    #[error("Unexpected node kind found")]
+    UnexpectedKind,
+}
+
+/// misc errors
+#[allow(missing_docs)]
+#[derive(Debug, thiserror::Error)]
+pub enum SvnMiscError {
+    #[error("Tried a versioning operation on an unversioned resource")]
+    UnversionedResource,
+}
+
+/// client errors
+#[allow(missing_docs)]
+#[derive(Debug, thiserror::Error)]
+pub enum SvnClientError {
+    #[error("Attempting restricted operation for modified resource")]
+    Modified,
 }

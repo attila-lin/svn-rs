@@ -1,6 +1,10 @@
-use svn_subr::error::ClientError;
-use svn_subr::error::MiscError;
-use svn_subr::error::NodeError;
+use std::path::Path;
+use std::path::PathBuf;
+
+use svn_types::error::SvnClientError;
+use svn_types::error::SvnError;
+use svn_types::error::SvnMiscError;
+use svn_types::error::SvnNodeError;
 use svn_wc::status::Status;
 use svn_wc::status::StatusKind;
 
@@ -11,7 +15,11 @@ pub struct CanDeleteBaton {
 }
 
 impl CanDeleteBaton {
-    pub fn find_undletables(cdt: Self, local_abspath: &Path, status: WcStatus) {
+    pub fn find_undletables(
+        cdt: &mut Self,
+        local_abspath: &Path,
+        status: &Status,
+    ) -> Result<(), SvnError> {
         if status.node_status == StatusKind::Missing {
             if cdt.root_abspath == local_abspath {
                 cdt.target_missing = true;
@@ -20,10 +28,11 @@ impl CanDeleteBaton {
 
         // check for error0ful states.
         if status.node_status == StatusKind::Obstructed {
-            return Err(NodeError::UnexpectedKind);
+            return Err(SvnNodeError::UnexpectedKind.into());
         } else if !status.versioned {
-            return Err(MiscError::UnversionedResource);
-        } else if (status.node_status == StatusKind::Added || node_status == StatusKind::Replaced)
+            return Err(SvnMiscError::UnversionedResource.into());
+        } else if (status.node_status == StatusKind::Added
+            || status.node_status == StatusKind::Replaced)
             || status.text_status == StatusKind::Normal
                 && (status.prop_status == StatusKind::Normal
                     || status.prop_status == StatusKind::None)
@@ -33,7 +42,7 @@ impl CanDeleteBaton {
             && status.node_status != StatusKind::Deleted
             && status.node_status != StatusKind::Missing
         {
-            return Err(ClientError::Modified);
+            return Err(SvnClientError::Modified.into());
         }
 
         Ok(())
