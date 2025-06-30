@@ -1,11 +1,19 @@
 //! session
 
-use std::collections::HashMap;
+use std::{collections::HashMap, path::Path};
 
 use svn_subr::auth::AuthBaton;
+use svn_types::{NodeKind, RevisionNumber};
 use url::Url;
 
 use crate::Connection;
+
+#[allow(missing_docs)]
+#[derive(Debug, thiserror::Error)]
+pub enum RaError {
+    #[error("illegal url")]
+    IllegalUrl,
+}
 
 // The RA session object.
 
@@ -40,14 +48,14 @@ impl SvnRaSession {
            SVN_ERR(svn_ra_reparent(ra_session, old_session_url, pool));
     */
     /// `svn_client__ensure_ra_session_url`
-    pub fn ensure_ra_session_url(&self, session_url: &Url) -> Result<Url, String> {
+    pub fn ensure_ra_session_url(&self, session_url: &Option<Url>) -> Result<Url, String> {
         let old_session_url = self.get_session_url()?;
 
         let ret = match old_session_url {
             Some(o) => Some(o),
             None => self.get_repos_root(session_url)?,
         };
-        if ret != session_url {
+        if &ret != session_url {
             self.reparent(session_url)?;
         }
 
@@ -64,7 +72,7 @@ impl SvnRaSession {
         self.0.get_session_url()
     }
 
-    fn get_repos_root(&self, url: Option<&Url>) -> Result<Option<Url>, String> {
+    fn get_repos_root(&self, url: &Option<Url>) -> Result<Option<Url>, String> {
         let ret = self.0.get_repos_root(url)?;
         Ok(ret)
     }
@@ -78,14 +86,31 @@ impl SvnRaSession {
     ///  *
     ///  * @since New in 1.4.
     /// `svn_ra_reparent`
-    fn reparent(&self, url: Option<&Url>) -> Result<Url, String> {
-        /* Make sure the new URL is in the same repository, so that the
-        implementations don't have to do it. */
-        let repos_root = self.get_repos_root(session_url)?;
-        if !svn_subr::uri::is_ancestor(repos_root, url) {
+    fn reparent(&self, url: &Option<Url>) -> Result<Url, String> {
+        // Make sure the new URL is in the same repository, so that the
+        // implementations don't have to do it.
+        let repos_root = self.get_repos_root(url)?.unwrap();
+        if !svn_subr::dirent_url::is_ancestor(&repos_root, url.as_ref().unwrap()) {
             return Err(RaError::IllegalUrl);
         }
         todo!()
+    }
+
+    /// * Set @a *kind to the node kind associated with @a path at @a revision.
+    ///  * If @a path does not exist under @a revision, set @a *kind to
+    ///  * @c svn_node_none.  @a path is relative to the @a session's parent URL.
+    ///  *
+    ///  * Use @a pool for memory allocation.
+    ///  *
+    ///  * @since New in 1.2.
+    /// `svn_ra_check_path`
+    pub fn check_path(
+        &self,
+        path: &Path,
+        revision: Option<RevisionNumber>,
+    ) -> Result<NodeKind, String> {
+        debug_assert_eq!(path.canonicalize().unwrap().to_str(), path.to_str());
+        self.0.check_path(path, revision)
     }
 }
 
@@ -119,6 +144,15 @@ pub trait RaSession {
     /// See svn_raget_repos_root2().
     fn get_repos_root(&self, _url: &Option<Url>) -> Result<Option<Url>, String> {
         // Placeholder implementation, should be overridden
+        Err("Not implemented".to_string())
+    }
+
+    /// See svn_ra_check_path().
+    fn check_path(
+        &self,
+        path: &Path,
+        revision: Option<RevisionNumber>,
+    ) -> Result<NodeKind, String> {
         Err("Not implemented".to_string())
     }
 }
