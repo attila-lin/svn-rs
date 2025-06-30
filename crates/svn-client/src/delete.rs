@@ -129,7 +129,7 @@ pub fn single_repos_delete(
         ""
     };
 
-    ensure_revprop_table(commit_revprops, revprop_table, log_msg)?;
+    util::ensure_revprop_table(commit_revprops, revprop_table, log_msg)?;
 
     // Fetch RA commit editor
     svn_ra::register_editor_shim_callbacks(ra_session)?;

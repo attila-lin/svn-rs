@@ -273,6 +273,9 @@ pub enum SvnMiscError {
 pub enum SvnClientError {
     #[error("Attempting restricted operation for modified resource")]
     Modified,
+
+    #[error("Bad property name")]
+    PropertyName,
 }
 
 #[allow(missing_docs)]

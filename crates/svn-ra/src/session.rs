@@ -100,19 +100,20 @@ impl SvnRaSession {
         Ok(())
     }
 
-    /// * Set @a *kind to the node kind associated with @a path at @a revision.
-    ///  * If @a path does not exist under @a revision, set @a *kind to
-    ///  * @c svn_node_none.  @a path is relative to the @a session's parent URL.
-    ///  *
-    ///  * Use @a pool for memory allocation.
-    ///  *
-    ///  * @since New in 1.2.
+    /// Set @a *kind to the node kind associated with @a path at @a revision.
+    /// If @a path does not exist under @a revision, set @a *kind to
+    /// @c svn_node_none.  @a path is relative to the @a session's parent URL.
+    ///
+    /// Use @a pool for memory allocation.
+    ///
+    /// @since New in 1.2.
+    ///
     /// `svn_ra_check_path`
     pub fn check_path(
         &self,
         path: &Path,
         revision: Option<RevisionNumber>,
-    ) -> Result<NodeKind, String> {
+    ) -> Result<NodeKind, RaError> {
         debug_assert_eq!(path.canonicalize().unwrap().to_str(), path.to_str());
         self.0.check_path(path, revision)
     }
@@ -147,8 +148,7 @@ pub trait RaSession {
 
     /// See svn_raget_repos_root2().
     fn get_repos_root(&self, _url: &Option<Url>) -> Result<Option<Url>, String> {
-        // Placeholder implementation, should be overridden
-        Err("Not implemented".to_string())
+        unimplemented!()
     }
 
     /// See svn_ra_check_path().
@@ -156,8 +156,8 @@ pub trait RaSession {
         &self,
         path: &Path,
         revision: Option<RevisionNumber>,
-    ) -> Result<NodeKind, String> {
-        Err("Not implemented".to_string())
+    ) -> Result<NodeKind, RaError> {
+        unimplemented!()
     }
 
     /// See svn_ra_reparent().

@@ -39,7 +39,7 @@ pub fn dirent_fetcher(
     // Is session_relpath still a directory?
     let kind = dfb
         .ra_session
-        .check_path(session_relpath, dfb.target_revision)?;
+        .check_path(session_relpath, Some(dfb.target_revision))?;
 
     let dirents = if kind == NodeKind::Directory {
         dfb.ra_session.get_dir()?

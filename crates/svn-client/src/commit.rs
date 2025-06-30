@@ -3,6 +3,8 @@
 // pub collect_lock_tokens()
 //
 
+mod util;
+
 use std::path::PathBuf;
 
 use svn_types::{NodeKind, RevisionNumber};

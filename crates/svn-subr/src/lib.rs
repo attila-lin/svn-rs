@@ -2,6 +2,7 @@ mod checksum;
 pub mod dirent_url;
 pub mod opt;
 pub mod path;
+pub mod properties;
 mod tristate;
 pub use tristate::Tristate;
 
