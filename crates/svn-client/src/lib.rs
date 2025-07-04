@@ -12,6 +12,7 @@ pub mod update;
 
 mod commit;
 mod error;
+pub mod util;
 pub use error::Error;
 
 use bitflags::bitflags;
