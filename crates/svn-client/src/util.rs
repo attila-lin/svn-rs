@@ -4,6 +4,7 @@
 use std::collections::HashMap;
 use std::path::Path;
 
+use svn_delta::editor::DeltaShimCallbacks;
 use svn_types::RevisionNumber;
 use svn_types::SvnError;
 use url::Url;
@@ -94,5 +95,28 @@ impl ShimCallbacksBaton {
         base_revision: RevisionNumber,
     ) -> Result<HashMap<String, String>, SvnError> {
         todo!("Implement fetch_props_func");
+    }
+}
+
+pub fn get_shim_callbacks(
+    wc_ctx: &WcCtx,
+    relpath_map: Option<HashMap<String, String>>,
+) -> DeltaShimCallbacks {
+    let shim_callbacks_baton = ShimCallbacksBaton {
+        wc_ctx: wc_ctx.clone(),
+        relpath_map: relpath_map.unwrap_or_default(),
+    };
+    DeltaShimCallbacks {
+        fetch_props_func: Box::new(move |path, base_revision| {
+            shim_callbacks_baton.fetch_props_func(path, base_revision)
+        }),
+        fetch_base_func: Box::new(move |path| wc_node_get_base(&shim_callbacks_baton.wc_ctx, path)),
+        get_relpath_func: Box::new(move |path| {
+            shim_callbacks_baton
+                .relpath_map
+                .get(path.to_str().unwrap())
+                .cloned()
+        }),
+        fetch_baton: Box::new(shim_callbacks_baton),
     }
 }

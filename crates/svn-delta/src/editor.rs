@@ -42,3 +42,17 @@ pub trait DeltaEditor {
 
     fn change_prop(&self, file_baton: (), name: &str, value: String) -> Result<(), EditorError>;
 }
+
+/// Collection of callbacks used for the shim code.  This structure
+/// may grow additional fields in the future.  Therefore, always use
+/// svn_delta_shim_callbacks_default() to allocate new instances of it.
+///
+/// `svn_delta_shim_callbacks_t`
+///
+/// FIXME: make it to trait of fetch baton
+pub struct DeltaShimCallbacks {
+    fetch_props_func: Box<dyn Fn(&Path) -> Result<Vec<(String, String)>, EditorError>>,
+    fetch_text_func: Box<dyn Fn(&Path) -> Result<String, EditorError>>,
+    fetc_base_func: Box<dyn Fn(&Path) -> Result<String, EditorError>>,
+    fetch_baton: Box<dyn std::any::Any>,
+}
